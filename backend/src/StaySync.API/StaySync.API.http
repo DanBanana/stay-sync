@@ -1,0 +1,6 @@
+@StaySync.API_HostAddress = http://localhost:5081
+
+GET {{StaySync.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p backend/src backend/tests)",
+      "Bash(dotnet new:*)",
+      "Bash(dotnet sln:*)",
+      "Bash(dotnet add:*)",
+      "Bash(dotnet build:*)",
+      "Bash(dotnet ef:*)",
+      "Bash(dotnet tool:*)",
+      "Bash(timeout 10 dotnet run)",
+      "Bash(timeout 15 dotnet run)",
+      "Bash(timeout 15 dotnet run --project src/StaySync.API)",
+      "Bash(curl -s -X POST http://localhost:5081/api/auth/login -H \"Content-Type: application/json\" -d '{\"\"email\"\":\"\"manager@staysync.dev\"\",\"\"password\"\":\"\"Manager1234!\"\"}')",
+      "Bash(curl -s -X POST http://localhost:5081/api/auth/login -H \"Content-Type: application/json\" -d \"{\"\"email\"\":\"\"manager@staysync.dev\"\",\"\"password\"\":\"\"Manager1234!\"\"}\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5081/api/properties)",
+      "Bash(ng new:*)",
+      "Bash(npm install:*)",
+      "Bash(ng build:*)",
+      "Bash(curl -s -X OPTIONS http://localhost:5081/api/auth/login -H \"Origin: http://localhost:4200\" -H \"Access-Control-Request-Method: POST\" -H \"Access-Control-Request-Headers: Content-Type\" -o /dev/null -w \"%{http_code}\")",
+      "Bash(curl -s -X POST http://localhost:5081/api/auth/login -H \"Content-Type: application/json\" -H \"Origin: http://localhost:4200\" -d \"{\"\"email\"\":\"\"admin@staysync.dev\"\",\"\"password\"\":\"\"Admin1234!\"\"}\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:4200)",
+      "Bash(pkill -f \"ng serve\")",
+      "Bash(taskkill /F /IM node.exe)"
+    ]
+  }
+}

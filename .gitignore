@@ -1,0 +1,38 @@
+# Build outputs
+bin/
+obj/
+out/
+dist/
+
+# .NET
+*.user
+*.suo
+*.vs/
+.vs/
+*.DotSettings.user
+appsettings.Development.json
+appsettings.Local.json
+
+# EF Core
+*.db
+*.db-shm
+*.db-wal
+
+# Node / Angular
+node_modules/
+.angular/
+npm-debug.log*
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/settings.json
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
