@@ -21,7 +21,12 @@
       "Bash(curl -s -X POST http://localhost:5081/api/auth/login -H \"Content-Type: application/json\" -H \"Origin: http://localhost:4200\" -d \"{\"\"email\"\":\"\"admin@staysync.dev\"\",\"\"password\"\":\"\"Admin1234!\"\"}\")",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:4200)",
       "Bash(pkill -f \"ng serve\")",
-      "Bash(taskkill /F /IM node.exe)"
+      "Bash(taskkill /F /IM node.exe)",
+      "Bash(rm \"c:/repos/stay-sync/backend/tests/StaySync.Application.Tests/UnitTest1.cs\")",
+      "Bash(dotnet test:*)",
+      "Bash(ng add:*)",
+      "Bash(xargs ls:*)",
+      "Bash(npx ng:*)"
     ]
   }
 }

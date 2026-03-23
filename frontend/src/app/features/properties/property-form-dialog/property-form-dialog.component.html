@@ -1,0 +1,29 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Edit Property' : 'New Property' }}</h2>
+<mat-dialog-content>
+  <form [formGroup]="form" class="dialog-form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Property Name</mat-label>
+      <input matInput formControlName="name" placeholder="e.g. Beach House" />
+      <mat-error *ngIf="form.get('name')?.hasError('required')">Name is required</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Address (optional)</mat-label>
+      <input matInput formControlName="address" placeholder="e.g. 123 Ocean Drive" />
+    </mat-form-field>
+    <mat-form-field *ngIf="showManagerDropdown" appearance="outline" class="full-width">
+      <mat-label>Property Manager</mat-label>
+      <mat-select formControlName="propertyManagerId">
+        <mat-option *ngFor="let pm of data.propertyManagers" [value]="pm.id">
+          {{ pm.displayName }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.get('propertyManagerId')?.hasError('required')">Property Manager is required</mat-error>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-flat-button color="primary" (click)="submit()" [disabled]="form.invalid">
+    {{ isEdit ? 'Save' : 'Create' }}
+  </button>
+</mat-dialog-actions>

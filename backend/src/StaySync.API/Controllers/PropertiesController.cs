@@ -26,10 +26,26 @@ public class PropertiesController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "PropertyManager")]
+    [Authorize(Roles = "SuperAdmin,PropertyManager")]
     public async Task<IActionResult> Create([FromBody] CreatePropertyCommand command, CancellationToken cancellationToken)
     {
         var result = await mediator.Send(command, cancellationToken);
         return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+    }
+
+    [HttpPut("{id:guid}")]
+    [Authorize(Roles = "SuperAdmin,PropertyManager")]
+    public async Task<IActionResult> Update(Guid id, [FromBody] UpdatePropertyCommand command, CancellationToken cancellationToken)
+    {
+        var result = await mediator.Send(command with { Id = id }, cancellationToken);
+        return Ok(result);
+    }
+
+    [HttpDelete("{id:guid}")]
+    [Authorize(Roles = "SuperAdmin,PropertyManager")]
+    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
+    {
+        await mediator.Send(new DeletePropertyCommand(id), cancellationToken);
+        return NoContent();
     }
 }

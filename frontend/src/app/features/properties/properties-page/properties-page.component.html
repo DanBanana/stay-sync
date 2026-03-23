@@ -1,0 +1,81 @@
+<div class="properties-layout">
+  <!-- Left Panel: Property List -->
+  <div class="property-list-panel">
+    <div class="panel-header">
+      <h2>Properties</h2>
+      <button mat-mini-fab color="primary" (click)="openCreateProperty()" matTooltip="Add Property">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+
+    <div *ngIf="propertiesLoading$ | async" class="loading-center">
+      <mat-spinner diameter="32"></mat-spinner>
+    </div>
+
+    <mat-nav-list *ngIf="!(propertiesLoading$ | async)">
+      <mat-list-item
+        *ngFor="let property of properties$ | async"
+        (click)="selectProperty(property)"
+        [class.selected]="(selectedPropertyId$ | async) === property.id">
+        <span matListItemTitle>{{ property.name }}</span>
+        <span matListItemLine *ngIf="property.address">{{ property.address }}</span>
+        <div matListItemMeta class="item-actions">
+          <button mat-icon-button (click)="openEditProperty(property, $event)" matTooltip="Edit">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteProperty(property, $event)" matTooltip="Delete">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </mat-list-item>
+
+      <div *ngIf="(properties$ | async)?.length === 0" class="empty-state">
+        <mat-icon>home</mat-icon>
+        <p>No properties yet.<br>Click + to add one.</p>
+      </div>
+    </mat-nav-list>
+  </div>
+
+  <!-- Right Panel: Rooms -->
+  <div class="rooms-panel" *ngIf="selectedPropertyId$ | async as selectedId">
+    <div class="panel-header">
+      <h2>Rooms</h2>
+      <button mat-mini-fab color="primary" (click)="openCreateRoom(selectedId)" matTooltip="Add Room">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+
+    <div *ngIf="roomsLoading$ | async" class="loading-center">
+      <mat-spinner diameter="32"></mat-spinner>
+    </div>
+
+    <div class="rooms-grid" *ngIf="!(roomsLoading$ | async)">
+      <mat-card *ngFor="let room of rooms$ | async" class="room-card">
+        <mat-card-header>
+          <mat-card-title>{{ room.name }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-actions>
+          <button mat-button color="primary" (click)="viewCalendars(room)">
+            <mat-icon>calendar_month</mat-icon> Calendars
+          </button>
+          <button mat-icon-button (click)="openEditRoom(room, $event)" matTooltip="Edit">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteRoom(room, $event)" matTooltip="Delete">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-card-actions>
+      </mat-card>
+
+      <div *ngIf="(rooms$ | async)?.length === 0" class="empty-state">
+        <mat-icon>bed</mat-icon>
+        <p>No rooms yet.<br>Click + to add one.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="no-selection" *ngIf="!(selectedPropertyId$ | async)">
+    <mat-icon>arrow_back</mat-icon>
+    <p>Select a property to view its rooms.</p>
+  </div>
+</div>

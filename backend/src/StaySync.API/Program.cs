@@ -75,32 +75,29 @@ static async Task SeedDevDataAsync(WebApplication app)
 
     await db.Database.MigrateAsync();
 
-    if (await db.Users.AnyAsync())
+    await SeedUserAsync(db, "admin@staysync.dev", "Admin1234!", UserRole.SuperAdmin, null);
+    await SeedUserAsync(db, "manager@staysync.dev", "Manager1234!", UserRole.PropertyManager, "Demo Property Manager");
+    await SeedUserAsync(db, "manager2@staysync.dev", "Manager1234!", UserRole.PropertyManager, "Second Property Manager");
+}
+
+static async Task SeedUserAsync(AppDbContext db, string email, string password, UserRole role, string? displayName)
+{
+    if (await db.Users.AnyAsync(u => u.Email == email))
         return;
 
-    var adminUser = new User
+    var user = new User
     {
-        Email = "admin@staysync.dev",
-        PasswordHash = PasswordHasher.Hash("Admin1234!"),
-        Role = UserRole.SuperAdmin
+        Email = email,
+        PasswordHash = PasswordHasher.Hash(password),
+        Role = role
     };
 
-    var pmUser = new User
-    {
-        Email = "manager@staysync.dev",
-        PasswordHash = PasswordHasher.Hash("Manager1234!"),
-        Role = UserRole.PropertyManager
-    };
-
-    db.Users.AddRange(adminUser, pmUser);
+    db.Users.Add(user);
     await db.SaveChangesAsync();
 
-    var propertyManager = new PropertyManager
+    if (role == UserRole.PropertyManager && displayName is not null)
     {
-        UserId = pmUser.Id,
-        DisplayName = "Demo Property Manager"
-    };
-
-    db.PropertyManagers.Add(propertyManager);
-    await db.SaveChangesAsync();
+        db.PropertyManagers.Add(new PropertyManager { UserId = user.Id, DisplayName = displayName });
+        await db.SaveChangesAsync();
+    }
 }

@@ -44,7 +44,7 @@ export class AuthEffects {
     () =>
       this.actions$.pipe(
         ofType(AuthActions.loginSuccess),
-        tap(() => this.router.navigate(['/dashboard']))
+        tap(() => this.router.navigate(['/properties']))
       ),
     { dispatch: false }
   );

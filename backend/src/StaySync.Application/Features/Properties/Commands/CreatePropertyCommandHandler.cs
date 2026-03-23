@@ -12,14 +12,26 @@ public class CreatePropertyCommandHandler(
 {
     public async Task<PropertyDto> Handle(CreatePropertyCommand request, CancellationToken cancellationToken)
     {
-        if (currentUser.PropertyManagerId is null)
-            throw new ForbiddenException();
+        Guid propertyManagerId;
+
+        if (currentUser.Role == "SuperAdmin")
+        {
+            if (request.PropertyManagerId is null)
+                throw new ForbiddenException();
+            propertyManagerId = request.PropertyManagerId.Value;
+        }
+        else
+        {
+            if (currentUser.PropertyManagerId is null)
+                throw new ForbiddenException();
+            propertyManagerId = currentUser.PropertyManagerId.Value;
+        }
 
         var property = new Property
         {
             Name = request.Name,
             Address = request.Address,
-            PropertyManagerId = currentUser.PropertyManagerId.Value
+            PropertyManagerId = propertyManagerId
         };
 
         context.Properties.Add(property);
