@@ -30,4 +30,15 @@ public class BookingsController(IMediator mediator) : ControllerBase
         var result = await mediator.Send(new GetBookingByIdQuery(id), cancellationToken);
         return Ok(result);
     }
+
+    [HttpGet("calendar")]
+    public async Task<IActionResult> GetForCalendar(
+        [FromQuery] Guid propertyId,
+        [FromQuery] DateOnly from,
+        [FromQuery] DateOnly to,
+        CancellationToken cancellationToken)
+    {
+        var result = await mediator.Send(new GetBookingsForCalendarQuery(propertyId, from, to), cancellationToken);
+        return Ok(result);
+    }
 }

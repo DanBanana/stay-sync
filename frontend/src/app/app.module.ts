@@ -20,6 +20,8 @@ import { externalCalendarsReducer } from './store/external-calendars/external-ca
 import { ExternalCalendarsEffects } from './store/external-calendars/external-calendars.effects';
 import { bookingsReducer } from './store/bookings/bookings.reducer';
 import { BookingsEffects } from './store/bookings/bookings.effects';
+import { calendarDashboardReducer } from './store/calendar-dashboard/calendar-dashboard.reducer';
+import { CalendarDashboardEffects } from './store/calendar-dashboard/calendar-dashboard.effects';
 
 export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionReducer<any> {
   return localStorageSync({ keys: ['auth'], rehydrate: true })(reducer);
@@ -40,8 +42,9 @@ const metaReducers: MetaReducer[] = [localStorageSyncReducer];
       rooms: roomsReducer,
       externalCalendars: externalCalendarsReducer,
       bookings: bookingsReducer,
+      calendarDashboard: calendarDashboardReducer,
     }, { metaReducers }),
-    EffectsModule.forRoot([AuthEffects, PropertiesEffects, RoomsEffects, ExternalCalendarsEffects, BookingsEffects]),
+    EffectsModule.forRoot([AuthEffects, PropertiesEffects, RoomsEffects, ExternalCalendarsEffects, BookingsEffects, CalendarDashboardEffects]),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() })
   ],
   bootstrap: [AppComponent]

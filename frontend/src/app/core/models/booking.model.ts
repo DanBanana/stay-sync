@@ -9,3 +9,13 @@ export interface Booking {
   status: 'Confirmed' | 'Cancelled' | 'Blocked';
   rawSummary: string | null;
 }
+
+export interface CalendarBooking {
+  id: string;
+  roomId: string;
+  roomName: string;
+  platform: string;
+  checkIn: string;
+  checkOut: string;
+  status: string;
+}

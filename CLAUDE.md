@@ -63,24 +63,22 @@ ng serve
 
 ## Current Status
 
-### Milestone 3 — Core Domain CRUD + UI: COMPLETE
+### Milestone 4 — Calendar Dashboard: COMPLETE
 
 #### Backend additions
-- `PUT /api/properties/{id}`, `DELETE /api/properties/{id}`
-- `PUT /api/rooms/{id}`, `DELETE /api/rooms/{id}`
-- `GET/POST/DELETE /api/external-calendars/by-room/{roomId}` and `/{id}`
-- `GET /api/bookings/by-room/{roomId}`, `GET /api/bookings/by-property/{propertyId}`
-- xUnit test project: `backend/tests/StaySync.Application.Tests/` (11 tests, all passing)
-- Stack: xUnit + Moq + FluentAssertions + EF Core InMemory
+- `GET /api/bookings/calendar?propertyId=&from=&to=` — returns `CalendarBookingDto[]` with room name + platform
+- `CalendarBookingDto`: Id, RoomId, RoomName, Platform, CheckIn, CheckOut, Status
+- `GetBookingsForCalendarQueryHandler`: date range overlap filter, tenant scope, joins Room + ExternalCalendar
+- xUnit tests: 27 passing (3 new for calendar handler: in-range, boundary exclusion, forbidden)
 
 #### Frontend additions
-- Angular Material 17 installed (Indigo/Pink theme)
-- `MaterialModule` in `SharedModule` — available across all features
-- `LayoutComponent`: mat-toolbar + mat-sidenav shell, responsive (hamburger on mobile)
-- Feature modules: `PropertiesModule`, `RoomsModule`, `ExternalCalendarsModule`, `BookingsModule`
-- NgRx slices: `properties`, `rooms`, `externalCalendars`, `bookings`
-- Services: `PropertyService`, `RoomService`, `ExternalCalendarService`, `BookingService`
-- Jasmine tests: `properties.effects.spec.ts`, `properties-page.component.spec.ts`
+- NgRx slice: `calendarDashboard` (actions, reducer, selectors, effects)
+- Smart 6-week rolling window cache: only fetches new date ranges on navigation
+- `CalendarGanttComponent`: CSS Grid timeline (rooms × days), booking bars colored by platform
+- `BookingDetailDialogComponent`: MatDialog popup on booking bar click
+- Dashboard page fully replaces placeholder: property selector, week navigation, Gantt
+- Calendar nav link added to sidenav (top of list)
+- Jasmine tests: `calendar-dashboard.effects.spec.ts`, `calendar-gantt.component.spec.ts`
 - `ng build --configuration=production` passes
 
 ---
@@ -92,8 +90,8 @@ ng serve
 | 1 | Project Foundation | **Done** |
 | 2 | Auth + RBAC | **Done** (included in M1) |
 | 3 | Core Domain — Property/Room/Calendar/Booking CRUD + UI | **Done** |
-| 4 | Calendar Dashboard | **Next** |
-| 5 | Manual Bookings | Pending |
+| 4 | Calendar Dashboard | **Done** |
+| 5 | Manual Bookings | **Next** |
 | 6 | Conflict Detection | Pending |
 | 7 | ICS Integration | Pending |
 | 8 | Background Sync | Pending |

@@ -1,0 +1,41 @@
+<h2 mat-dialog-title>Booking Details</h2>
+
+<mat-dialog-content>
+  <table class="detail-table">
+    <tr>
+      <td class="label">Room</td>
+      <td>{{ booking.roomName }}</td>
+    </tr>
+    <tr>
+      <td class="label">Platform</td>
+      <td>{{ booking.platform }}</td>
+    </tr>
+    <tr>
+      <td class="label">Check-in</td>
+      <td>{{ booking.checkIn | date:'mediumDate' }}</td>
+    </tr>
+    <tr>
+      <td class="label">Check-out</td>
+      <td>{{ booking.checkOut | date:'mediumDate' }}</td>
+    </tr>
+    <tr>
+      <td class="label">Duration</td>
+      <td>{{ nights }} night{{ nights !== 1 ? 's' : '' }}</td>
+    </tr>
+    <tr>
+      <td class="label">Status</td>
+      <td>{{ booking.status }}</td>
+    </tr>
+  </table>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="dialogRef.close()">Close</button>
+</mat-dialog-actions>
+
+<style>
+  .detail-table { width: 100%; border-collapse: collapse; }
+  .detail-table tr { border-bottom: 1px solid #f0f0f0; }
+  .detail-table td { padding: 8px 4px; font-size: 14px; }
+  .detail-table .label { color: #666; font-weight: 500; width: 90px; }
+</style>

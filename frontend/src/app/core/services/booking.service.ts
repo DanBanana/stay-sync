@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Booking } from '../models/booking.model';
+import { Booking, CalendarBooking } from '../models/booking.model';
 
 @Injectable({ providedIn: 'root' })
 export class BookingService {
@@ -16,5 +16,11 @@ export class BookingService {
 
   getByProperty(propertyId: string): Observable<Booking[]> {
     return this.http.get<Booking[]>(`${this.base}/by-property/${propertyId}`);
+  }
+
+  getForCalendar(propertyId: string, from: string, to: string): Observable<CalendarBooking[]> {
+    return this.http.get<CalendarBooking[]>(`${this.base}/calendar`, {
+      params: { propertyId, from, to }
+    });
   }
 }

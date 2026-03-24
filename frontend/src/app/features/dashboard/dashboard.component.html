@@ -1,0 +1,62 @@
+<div class="calendar-page">
+  <!-- Toolbar -->
+  <div class="calendar-toolbar">
+    <div class="toolbar-left">
+      <mat-form-field appearance="outline" class="property-select" *ngIf="(properties$ | async)!.length > 1">
+        <mat-label>Property</mat-label>
+        <mat-select
+          [value]="selectedPropertyId$ | async"
+          (selectionChange)="onPropertyChange($event.value)"
+        >
+          <mat-option *ngFor="let p of properties$ | async" [value]="p.id">
+            {{ p.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <span class="property-name" *ngIf="(properties$ | async)!.length === 1">
+        {{ (properties$ | async)?.[0]?.name }}
+      </span>
+    </div>
+
+    <div class="toolbar-center">
+      <button mat-icon-button (click)="navigateBack()" aria-label="Previous week">
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <span class="window-label">{{ windowLabel$ | async }}</span>
+      <button mat-icon-button (click)="navigateForward()" aria-label="Next week">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+
+    <div class="toolbar-right"></div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-bar" *ngIf="loading$ | async">
+    <mat-progress-spinner mode="indeterminate" diameter="32"></mat-progress-spinner>
+  </div>
+
+  <!-- Error -->
+  <div class="error-msg" *ngIf="error$ | async as error">
+    {{ error }}
+  </div>
+
+  <!-- No property selected -->
+  <div class="empty-state" *ngIf="!(selectedPropertyId$ | async) && !(loading$ | async)">
+    <mat-icon>calendar_today</mat-icon>
+    <p>Select a property to view its calendar.</p>
+  </div>
+
+  <!-- Gantt -->
+  <ng-container *ngIf="{ rooms: groupedByRoom$ | async, days: days$ | async, propId: selectedPropertyId$ | async, start: windowStart$ | async } as vm">
+    <div class="gantt-container" *ngIf="vm.propId">
+      <app-calendar-gantt
+        [rooms]="vm.rooms || []"
+        [days]="vm.days || []"
+        [windowStart]="vm.start || ''"
+        (bookingClicked)="onBookingClicked($event)"
+      ></app-calendar-gantt>
+    </div>
+  </ng-container>
+</div>

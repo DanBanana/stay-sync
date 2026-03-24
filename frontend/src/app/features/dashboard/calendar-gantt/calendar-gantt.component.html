@@ -1,0 +1,47 @@
+<div class="gantt-wrapper">
+  <div class="gantt-grid">
+    <!-- Header corner -->
+    <div class="gantt-header-corner"></div>
+
+    <!-- Date headers -->
+    <div
+      *ngFor="let day of days"
+      class="gantt-header-cell"
+      [class.today]="isToday(day)"
+    >
+      <span class="day-name">{{ day | date:'EEE' }}</span>
+      <span class="day-num">{{ day | date:'d' }}</span>
+    </div>
+
+    <!-- Room rows -->
+    <ng-container *ngFor="let room of rooms">
+      <div class="gantt-room-label" [title]="room.roomName">{{ room.roomName }}</div>
+      <div class="gantt-row-cells">
+        <!-- Day cell backgrounds (for grid lines + today highlight) -->
+        <div
+          *ngFor="let day of days"
+          class="gantt-day-cell"
+          [class.today]="isToday(day)"
+        ></div>
+
+        <!-- Booking bars -->
+        <div
+          *ngFor="let booking of bookingsForRoom(room.roomId)"
+          class="booking-bar platform-{{ platformClass(booking.platform) }}"
+          [style.left]="barStyle(booking)['left']"
+          [style.width]="barStyle(booking)['width']"
+          [matTooltip]="barTooltip(booking)"
+          matTooltipPosition="above"
+          (click)="bookingClicked.emit(booking)"
+        >
+          {{ booking.platform }}
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Empty state -->
+    <ng-container *ngIf="rooms.length === 0">
+      <div class="gantt-empty">No bookings in this period.</div>
+    </ng-container>
+  </div>
+</div>
