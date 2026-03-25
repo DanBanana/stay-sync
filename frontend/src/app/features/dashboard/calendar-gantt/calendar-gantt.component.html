@@ -22,6 +22,7 @@
           *ngFor="let day of days"
           class="gantt-day-cell"
           [class.today]="isToday(day)"
+          (click)="cellClicked.emit({ roomId: room.roomId, date: day })"
         ></div>
 
         <!-- Booking bars -->
@@ -32,7 +33,7 @@
           [style.width]="barStyle(booking)['width']"
           [matTooltip]="barTooltip(booking)"
           matTooltipPosition="above"
-          (click)="bookingClicked.emit(booking)"
+          (click)="onBarClick($event, booking)"
         >
           {{ booking.platform }}
         </div>

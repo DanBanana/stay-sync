@@ -1,0 +1,53 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Edit Booking' : 'New Booking' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="booking-form">
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Room</mat-label>
+      <mat-select formControlName="roomId">
+        <mat-option *ngFor="let room of data.rooms" [value]="room.roomId">
+          {{ room.roomName }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Check-in</mat-label>
+      <input matInput [matDatepicker]="checkInPicker" formControlName="checkIn" [max]="maxCheckIn" />
+      <mat-datepicker-toggle matSuffix [for]="checkInPicker"></mat-datepicker-toggle>
+      <mat-datepicker #checkInPicker></mat-datepicker>
+      <mat-error *ngIf="form.get('checkIn')?.invalid">Check-in is required.</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Check-out</mat-label>
+      <input matInput [matDatepicker]="checkOutPicker" formControlName="checkOut" [min]="minCheckOut" />
+      <mat-datepicker-toggle matSuffix [for]="checkOutPicker"></mat-datepicker-toggle>
+      <mat-datepicker #checkOutPicker></mat-datepicker>
+      <mat-error *ngIf="form.get('checkOut')?.invalid">Check-out is required.</mat-error>
+    </mat-form-field>
+
+    <mat-error *ngIf="form.hasError('checkOutNotAfterCheckIn') && form.get('checkOut')?.touched">
+      Check-out must be after check-in.
+    </mat-error>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Guest name (optional)</mat-label>
+      <input matInput type="text" formControlName="guestName" />
+    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-flat-button color="primary" [disabled]="form.invalid" (click)="onSubmit()">
+    {{ isEdit ? 'Save' : 'Create' }}
+  </button>
+</mat-dialog-actions>
+
+<style>
+  .booking-form { display: flex; flex-direction: column; gap: 4px; min-width: 300px; padding-top: 8px; }
+  .full-width { width: 100%; }
+</style>

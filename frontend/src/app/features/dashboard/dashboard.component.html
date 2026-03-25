@@ -56,7 +56,20 @@
         [days]="vm.days || []"
         [windowStart]="vm.start || ''"
         (bookingClicked)="onBookingClicked($event)"
+        (cellClicked)="onCellClicked($event, vm.rooms || [])"
       ></app-calendar-gantt>
     </div>
   </ng-container>
+
+  <!-- FAB — mobile only -->
+  <button
+    mat-fab
+    color="primary"
+    class="create-fab"
+    aria-label="New booking"
+    *ngIf="selectedPropertyId$ | async"
+    (click)="onFabClicked()"
+  >
+    <mat-icon>add</mat-icon>
+  </button>
 </div>

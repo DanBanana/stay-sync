@@ -7,4 +7,5 @@ public record CalendarBookingDto(
     string Platform,
     DateOnly CheckIn,
     DateOnly CheckOut,
-    string Status);
+    string Status,
+    string? GuestName);

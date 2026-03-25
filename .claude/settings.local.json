@@ -28,7 +28,8 @@
       "Bash(xargs ls:*)",
       "Bash(npx ng:*)",
       "Bash(xargs grep:*)",
-      "Bash(grep -E \"\\\\.\\(ts|html|scss\\)$\")"
+      "Bash(grep -E \"\\\\.\\(ts|html|scss\\)$\")",
+      "Bash(grep -E \"\\\\.\\(ts|html\\)$\")"
     ]
   }
 }

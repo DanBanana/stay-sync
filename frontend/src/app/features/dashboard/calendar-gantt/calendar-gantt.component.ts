@@ -17,6 +17,7 @@ export class CalendarGanttComponent implements OnChanges {
   @Input() days: Date[] = [];
   @Input() windowStart!: string;
   @Output() bookingClicked = new EventEmitter<CalendarBooking>();
+  @Output() cellClicked = new EventEmitter<{ roomId: string; date: Date }>();
 
   today = new Date();
 
@@ -67,6 +68,11 @@ export class CalendarGanttComponent implements OnChanges {
 
   barTooltip(booking: CalendarBooking): string {
     return `${booking.platform} · ${booking.checkIn} → ${booking.checkOut} · ${booking.status}`;
+  }
+
+  onBarClick(event: MouseEvent, booking: CalendarBooking): void {
+    event.stopPropagation();
+    this.bookingClicked.emit(booking);
   }
 
   private dayDiff(from: Date, to: Date): number {

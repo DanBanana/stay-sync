@@ -16,6 +16,8 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 const MATERIAL_MODULES = [
   MatToolbarModule,
@@ -35,6 +37,8 @@ const MATERIAL_MODULES = [
   MatMenuModule,
   MatTooltipModule,
   MatDividerModule,
+  MatDatepickerModule,
+  MatNativeDateModule,
 ];
 
 @NgModule({

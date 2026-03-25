@@ -18,4 +18,18 @@ export interface CalendarBooking {
   checkIn: string;
   checkOut: string;
   status: string;
+  guestName?: string | null;
+}
+
+export interface CreateManualBookingRequest {
+  roomId: string;
+  checkIn: string;
+  checkOut: string;
+  guestName?: string | null;
+}
+
+export interface UpdateManualBookingRequest {
+  checkIn: string;
+  checkOut: string;
+  guestName?: string | null;
 }

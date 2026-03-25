@@ -26,10 +26,18 @@
       <td class="label">Status</td>
       <td>{{ booking.status }}</td>
     </tr>
+    <tr *ngIf="booking.guestName">
+      <td class="label">Guest</td>
+      <td>{{ booking.guestName }}</td>
+    </tr>
   </table>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
+  <ng-container *ngIf="isManual">
+    <button mat-button color="warn" (click)="onDelete()">Delete</button>
+    <button mat-button (click)="onEdit()">Edit</button>
+  </ng-container>
   <button mat-button (click)="dialogRef.close()">Close</button>
 </mat-dialog-actions>
 

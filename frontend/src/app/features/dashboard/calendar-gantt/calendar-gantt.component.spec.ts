@@ -80,6 +80,21 @@ describe('CalendarGanttComponent', () => {
     expect(todayCells.length).toBe(1);
   });
 
+  it('should emit cellClicked when an empty day cell is clicked', () => {
+    component.rooms = mockRooms;
+    component.days = makeDays('2026-03-17', 42);
+    component.windowStart = '2026-03-17';
+    fixture.detectChanges();
+
+    let emitted: { roomId: string; date: Date } | null = null;
+    component.cellClicked.subscribe((e: { roomId: string; date: Date }) => emitted = e);
+
+    const cell = fixture.debugElement.query(By.css('.gantt-day-cell'));
+    cell.nativeElement.click();
+
+    expect(emitted!.roomId).toBe('r1');
+  });
+
   it('should emit bookingClicked when bar is clicked', () => {
     component.rooms = mockRooms;
     component.days = makeDays('2026-03-17', 42);

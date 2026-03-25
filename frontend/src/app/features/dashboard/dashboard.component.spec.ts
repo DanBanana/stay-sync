@@ -18,6 +18,7 @@ import {
 import { selectAllProperties } from '../../store/properties/properties.selectors';
 import { selectRole } from '../../store/auth/auth.selectors';
 import { BookingDetailDialogComponent } from './booking-detail-dialog/booking-detail-dialog.component';
+import { CreateEditBookingDialogComponent } from './create-edit-booking-dialog/create-edit-booking-dialog.component';
 import { CalendarBooking } from '../../core/models/booking.model';
 
 const mockProperty = { id: 'p1', name: 'Beach House', address: null, propertyManagerId: 'pm1', createdAt: '2026-01-01T00:00:00Z' };
@@ -110,5 +111,23 @@ describe('DashboardComponent', () => {
       data: mockBooking,
       width: '340px',
     });
+  });
+
+  it('should open CreateEditBookingDialog with prefill on cell click', () => {
+    const rooms = [{ roomId: 'r1', roomName: 'Room A', bookings: [] }];
+    const date = new Date('2026-04-05');
+    component.onCellClicked({ roomId: 'r1', date }, rooms);
+    expect(dialogSpy.open).toHaveBeenCalledWith(
+      CreateEditBookingDialogComponent,
+      jasmine.objectContaining({ data: jasmine.objectContaining({ prefill: { roomId: 'r1', checkIn: '2026-04-05' } }) })
+    );
+  });
+
+  it('should open CreateEditBookingDialog without prefill on FAB click', () => {
+    component.onFabClicked();
+    expect(dialogSpy.open).toHaveBeenCalledWith(
+      CreateEditBookingDialogComponent,
+      jasmine.objectContaining({ data: jasmine.objectContaining({ rooms: [] }) })
+    );
   });
 });

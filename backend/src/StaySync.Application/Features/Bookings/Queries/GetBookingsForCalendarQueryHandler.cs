@@ -27,6 +27,8 @@ public class GetBookingsForCalendarQueryHandler(
                 b => b.RoomId,
                 r => r.Id,
                 (b, r) => new { Booking = b, Room = r })
+            .OrderBy(x => x.Room.Name)
+            .ThenBy(x => x.Booking.CheckIn)
             .Join(context.ExternalCalendars,
                 x => x.Booking.ExternalCalendarId,
                 ec => ec.Id,
@@ -37,9 +39,8 @@ public class GetBookingsForCalendarQueryHandler(
                     ec.Platform,
                     x.Booking.CheckIn,
                     x.Booking.CheckOut,
-                    x.Booking.Status.ToString()))
-            .OrderBy(dto => dto.RoomName)
-            .ThenBy(dto => dto.CheckIn)
+                    x.Booking.Status.ToString(),
+                    x.Booking.GuestName))
             .ToListAsync(cancellationToken);
     }
 }

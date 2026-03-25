@@ -166,7 +166,7 @@ Environment config via Railway env vars → mapped to `appsettings.json` via .NE
 | 3 | Core Domain | Property, Room, ExternalCalendar, Booking CRUD with tenant isolation |
 | 4 | Calendar Dashboard | Angular calendar UI, booking visualization per room |
 | 5 | Manual Bookings | Create/edit/delete bookings from UI |
-| 6 | Conflict Detection | Overlap detection, dashboard highlighting |
+| 6 | Conflict Detection | Overlap detection, conflict highlighting, lane rendering for overlapping bars |
 | 7 | ICS Integration | ICS download, parse, normalize, upsert |
 | 8 | Background Sync | Scheduled ICS sync service |
 | 9 | Hardening | Logging, validation, error handling, production readiness |

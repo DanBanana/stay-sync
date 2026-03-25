@@ -67,7 +67,7 @@ ng serve
 
 #### Backend additions
 - `GET /api/bookings/calendar?propertyId=&from=&to=` — returns `CalendarBookingDto[]` with room name + platform
-- `CalendarBookingDto`: Id, RoomId, RoomName, Platform, CheckIn, CheckOut, Status
+- `CalendarBookingDto`: Id, RoomId, RoomName, Platform, CheckIn, CheckOut, Status, GuestName
 - `GetBookingsForCalendarQueryHandler`: date range overlap filter, tenant scope, joins Room + ExternalCalendar
 - xUnit tests: 27 passing (3 new for calendar handler: in-range, boundary exclusion, forbidden)
 
@@ -83,6 +83,31 @@ ng serve
 
 ---
 
+### Milestone 5 — Manual Bookings: COMPLETE
+
+#### Backend additions
+- `POST /api/bookings` → 201 with booking ID
+- `PUT /api/bookings/{id}` → 204 (manual-only enforced via BadRequestException)
+- `DELETE /api/bookings/{id}` → 204 (manual-only enforced)
+- Commands: `CreateManualBookingCommand`, `UpdateManualBookingCommand`, `DeleteManualBookingCommand`
+- FluentValidation: `CreateManualBookingCommandValidator`, `UpdateManualBookingCommandValidator` (CheckOut > CheckIn)
+- Auto-creates "Manual" platform `ExternalCalendar` per room on first manual booking
+- `BadRequestException` wired into `ExceptionHandlingMiddleware` → 400
+- xUnit tests: handler tests (create/update/delete) + validator tests (date range + RoomId)
+
+#### Frontend additions
+- `CreateEditBookingDialogComponent`: create + edit modes, Angular Material datepicker, cross-field date validation, guest name field
+- `BookingDetailDialogComponent`: displays guest name; Edit + Delete actions restricted to manual bookings
+- `ConfirmDialogComponent`: reusable delete confirmation dialog
+- NgRx `calendarDashboard` slice extended: create/update/delete booking actions, effects, reducer, reload-after-mutation
+- `BookingService`: `createManual()`, `updateManual()`, `deleteManual()`
+- FAB button on dashboard for creating new bookings
+- Date fields use `Date` objects in forms; `toDate()`/`toDateString()` helpers convert at API boundary only
+- Jasmine tests: `create-edit-booking-dialog.component.spec.ts`, `booking-detail-dialog.component.spec.ts`, `confirm-dialog.component.spec.ts`, `calendar-dashboard.effects.spec.ts` (extended)
+- `ng build --configuration=production` passes
+
+---
+
 ## Milestone Roadmap
 
 | # | Milestone | Status |
@@ -91,11 +116,21 @@ ng serve
 | 2 | Auth + RBAC | **Done** (included in M1) |
 | 3 | Core Domain — Property/Room/Calendar/Booking CRUD + UI | **Done** |
 | 4 | Calendar Dashboard | **Done** |
-| 5 | Manual Bookings | **Next** |
-| 6 | Conflict Detection | Pending |
+| 5 | Manual Bookings | **Done** |
+| 6 | Conflict Detection — includes overlap detection, conflict highlighting, and visual lane-assignment rendering (stacking overlapping booking bars into sub-rows) | Pending |
 | 7 | ICS Integration | Pending |
 | 8 | Background Sync | Pending |
 | 9 | Hardening | Pending |
+
+---
+
+## Frontend Development Standards
+
+These apply to **every milestone** from M3 onward.
+
+- All Angular forms must use Reactive Forms (FormBuilder / FormGroup / formControlName). Template-driven forms (ngModel) are not allowed.
+- UI form validation must go through reactive form validators.
+- Date form fields must bind to `Date` objects. Convert to/from `YYYY-MM-DD` strings only at the API boundary (on submit / on load via `toDate()` / `toDateString()` helpers).
 
 ---
 

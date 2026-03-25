@@ -101,6 +101,16 @@
   flex-direction: column;
 }
 
+// ── FAB ───────────────────────────────────────────────────────────────────────
+
+.create-fab {
+  display: none; // hidden by default; shown on mobile via breakpoint below
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 100;
+}
+
 // ── Tablet ────────────────────────────────────────────────────────────────────
 
 @media (min-width: 768px) and (max-width: 1024px) {
@@ -135,5 +145,9 @@
 
   .property-select {
     width: 160px;
+  }
+
+  .create-fab {
+    display: flex;
   }
 }

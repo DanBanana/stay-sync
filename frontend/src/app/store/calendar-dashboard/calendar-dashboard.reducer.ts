@@ -9,6 +9,7 @@ export interface CalendarDashboardState {
   bookings: CalendarBooking[];
   loadedRange: { from: string; to: string } | null;
   loading: boolean;
+  saving: boolean;
   error: string | null;
 }
 
@@ -48,6 +49,7 @@ export const initialState: CalendarDashboardState = {
   bookings: [],
   loadedRange: null,
   loading: false,
+  saving: false,
   error: null,
 };
 
@@ -81,6 +83,27 @@ export const calendarDashboardReducer = createReducer(
     loading: false,
     error,
   })),
+
+  on(
+    CalendarDashboardActions.createBooking,
+    CalendarDashboardActions.updateBooking,
+    CalendarDashboardActions.deleteBooking,
+    state => ({ ...state, saving: true, error: null })
+  ),
+
+  on(
+    CalendarDashboardActions.createBookingSuccess,
+    CalendarDashboardActions.updateBookingSuccess,
+    CalendarDashboardActions.deleteBookingSuccess,
+    state => ({ ...state, saving: false })
+  ),
+
+  on(
+    CalendarDashboardActions.createBookingFailure,
+    CalendarDashboardActions.updateBookingFailure,
+    CalendarDashboardActions.deleteBookingFailure,
+    (state, { error }) => ({ ...state, saving: false, error })
+  ),
 
   on(CalendarDashboardActions.reset, () => initialState),
   on(AuthActions.logout, () => initialState),

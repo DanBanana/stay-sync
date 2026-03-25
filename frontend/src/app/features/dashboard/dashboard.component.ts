@@ -8,6 +8,7 @@ import { selectAllProperties } from '../../store/properties/properties.selectors
 import { PropertiesActions } from '../../store/properties/properties.actions';
 import { selectRole } from '../../store/auth/auth.selectors';
 import { CalendarDashboardActions } from '../../store/calendar-dashboard/calendar-dashboard.actions';
+import { RoomsActions } from '../../store/rooms/rooms.actions';
 import {
   selectCalendarDays,
   selectCalendarError,
@@ -18,6 +19,7 @@ import {
   selectGroupedByRoom,
 } from '../../store/calendar-dashboard/calendar-dashboard.selectors';
 import { BookingDetailDialogComponent } from './booking-detail-dialog/booking-detail-dialog.component';
+import { CreateEditBookingDialogComponent, CreateEditBookingDialogData } from './create-edit-booking-dialog/create-edit-booking-dialog.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -58,7 +60,9 @@ export class DashboardComponent implements OnInit {
     ).subscribe(props => {
       this.selectedPropertyId$.pipe(take(1)).subscribe(selectedId => {
         if (!selectedId) {
-          this.store.dispatch(CalendarDashboardActions.setProperty({ propertyId: props[0].id }));
+          const propertyId = props[0].id;
+          this.store.dispatch(CalendarDashboardActions.setProperty({ propertyId }));
+          this.store.dispatch(RoomsActions.loadRooms({ propertyId }));
         }
       });
     });
@@ -66,6 +70,7 @@ export class DashboardComponent implements OnInit {
 
   onPropertyChange(propertyId: string): void {
     this.store.dispatch(CalendarDashboardActions.setProperty({ propertyId }));
+    this.store.dispatch(RoomsActions.loadRooms({ propertyId }));
   }
 
   navigateBack(): void {
@@ -81,5 +86,20 @@ export class DashboardComponent implements OnInit {
       data: booking,
       width: '340px',
     });
+  }
+
+  onCellClicked(event: { roomId: string; date: Date }, rooms: { roomId: string; roomName: string }[]): void {
+    const checkIn = event.date.toISOString().slice(0, 10);
+    this.openCreateDialog({ rooms, prefill: { roomId: event.roomId, checkIn } });
+  }
+
+  onFabClicked(): void {
+    this.groupedByRoom$.pipe(take(1)).subscribe(rooms => {
+      this.openCreateDialog({ rooms });
+    });
+  }
+
+  private openCreateDialog(data: CreateEditBookingDialogData): void {
+    this.dialog.open(CreateEditBookingDialogComponent, { data, width: '380px' });
   }
 }

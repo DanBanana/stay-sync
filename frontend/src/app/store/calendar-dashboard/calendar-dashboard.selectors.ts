@@ -1,4 +1,5 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
+import { selectAllRooms } from '../rooms/rooms.selectors';
 import { CalendarDashboardState } from './calendar-dashboard.reducer';
 
 export const selectCalendarDashboardState = createFeatureSelector<CalendarDashboardState>('calendarDashboard');
@@ -7,6 +8,7 @@ export const selectCalendarPropertyId = createSelector(selectCalendarDashboardSt
 export const selectCalendarWindowStart = createSelector(selectCalendarDashboardState, s => s.windowStart);
 export const selectCalendarLoadedRange = createSelector(selectCalendarDashboardState, s => s.loadedRange);
 export const selectCalendarLoading = createSelector(selectCalendarDashboardState, s => s.loading);
+export const selectCalendarSaving = createSelector(selectCalendarDashboardState, s => s.saving);
 export const selectCalendarError = createSelector(selectCalendarDashboardState, s => s.error);
 
 export const selectCalendarWindowEnd = createSelector(selectCalendarWindowStart, windowStart => {
@@ -34,16 +36,22 @@ export const selectBookingsInWindow = createSelector(
     state.bookings.filter(b => b.checkIn < windowEnd && b.checkOut > windowStart)
 );
 
-export const selectGroupedByRoom = createSelector(selectBookingsInWindow, bookings => {
-  const roomMap = new Map<string, { roomId: string; roomName: string; bookings: typeof bookings }>();
-  for (const b of bookings) {
-    if (!roomMap.has(b.roomId)) {
-      roomMap.set(b.roomId, { roomId: b.roomId, roomName: b.roomName, bookings: [] });
+export const selectGroupedByRoom = createSelector(
+  selectCalendarPropertyId,
+  selectAllRooms,
+  selectBookingsInWindow,
+  (propertyId, rooms, bookings) => {
+    const propertyRooms = rooms.filter(r => r.propertyId === propertyId);
+    const bookingMap = new Map<string, typeof bookings>();
+    for (const b of bookings) {
+      if (!bookingMap.has(b.roomId)) bookingMap.set(b.roomId, []);
+      bookingMap.get(b.roomId)!.push(b);
     }
-    roomMap.get(b.roomId)!.bookings.push(b);
+    return propertyRooms
+      .map(r => ({ roomId: r.id, roomName: r.name, bookings: bookingMap.get(r.id) ?? [] }))
+      .sort((a, b) => a.roomName.localeCompare(b.roomName));
   }
-  return Array.from(roomMap.values()).sort((a, b) => a.roomName.localeCompare(b.roomName));
-});
+);
 
 export const selectNeedsLoad = createSelector(
   selectCalendarWindowStart,
