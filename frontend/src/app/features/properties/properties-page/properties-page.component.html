@@ -1,12 +1,12 @@
 <div class="properties-layout">
   <!-- Left Panel: Property List -->
-  <div class="property-list-panel">
-    <div class="panel-header">
+  <aside class="property-list-panel">
+    <header class="panel-header">
       <h2>Properties</h2>
-      <button mat-mini-fab color="primary" (click)="openCreateProperty()" matTooltip="Add Property">
+      <button mat-mini-fab color="primary" (click)="openCreateProperty()" matTooltip="Add Property" aria-label="Add property">
         <mat-icon>add</mat-icon>
       </button>
-    </div>
+    </header>
 
     <div *ngIf="propertiesLoading$ | async" class="loading-center">
       <mat-spinner diameter="32"></mat-spinner>
@@ -20,10 +20,10 @@
         <span matListItemTitle>{{ property.name }}</span>
         <span matListItemLine *ngIf="property.address">{{ property.address }}</span>
         <div matListItemMeta class="item-actions">
-          <button mat-icon-button (click)="openEditProperty(property, $event)" matTooltip="Edit">
+          <button mat-icon-button (click)="openEditProperty(property, $event)" matTooltip="Edit" aria-label="Edit property">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-icon-button color="warn" (click)="deleteProperty(property, $event)" matTooltip="Delete">
+          <button mat-icon-button color="warn" (click)="deleteProperty(property, $event)" matTooltip="Delete" aria-label="Delete property">
             <mat-icon>delete</mat-icon>
           </button>
         </div>
@@ -34,16 +34,16 @@
         <p>No properties yet.<br>Click + to add one.</p>
       </div>
     </mat-nav-list>
-  </div>
+  </aside>
 
   <!-- Right Panel: Rooms -->
-  <div class="rooms-panel" *ngIf="selectedPropertyId$ | async as selectedId">
-    <div class="panel-header">
+  <section class="rooms-panel" *ngIf="selectedPropertyId$ | async as selectedId">
+    <header class="panel-header">
       <h2>Rooms</h2>
-      <button mat-mini-fab color="primary" (click)="openCreateRoom(selectedId)" matTooltip="Add Room">
+      <button mat-mini-fab color="primary" (click)="openCreateRoom(selectedId)" matTooltip="Add Room" aria-label="Add room">
         <mat-icon>add</mat-icon>
       </button>
-    </div>
+    </header>
 
     <div *ngIf="roomsLoading$ | async" class="loading-center">
       <mat-spinner diameter="32"></mat-spinner>
@@ -58,10 +58,10 @@
           <button mat-button color="primary" (click)="viewCalendars(room)">
             <mat-icon>calendar_month</mat-icon> Calendars
           </button>
-          <button mat-icon-button (click)="openEditRoom(room, $event)" matTooltip="Edit">
+          <button mat-icon-button (click)="openEditRoom(room, $event)" matTooltip="Edit" aria-label="Edit room">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-icon-button color="warn" (click)="deleteRoom(room, $event)" matTooltip="Delete">
+          <button mat-icon-button color="warn" (click)="deleteRoom(room, $event)" matTooltip="Delete" aria-label="Delete room">
             <mat-icon>delete</mat-icon>
           </button>
         </mat-card-actions>
@@ -72,7 +72,7 @@
         <p>No rooms yet.<br>Click + to add one.</p>
       </div>
     </div>
-  </div>
+  </section>
 
   <div class="no-selection" *ngIf="!(selectedPropertyId$ | async)">
     <mat-icon>arrow_back</mat-icon>

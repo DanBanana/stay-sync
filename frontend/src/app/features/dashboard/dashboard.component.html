@@ -1,6 +1,6 @@
 <div class="calendar-page">
   <!-- Toolbar -->
-  <div class="calendar-toolbar">
+  <header class="calendar-toolbar">
     <div class="toolbar-left">
       <mat-form-field appearance="outline" class="property-select" *ngIf="(properties$ | async)!.length > 1">
         <mat-label>Property</mat-label>
@@ -30,7 +30,7 @@
     </div>
 
     <div class="toolbar-right"></div>
-  </div>
+  </header>
 
   <!-- Loading -->
   <div class="loading-bar" *ngIf="loading$ | async">

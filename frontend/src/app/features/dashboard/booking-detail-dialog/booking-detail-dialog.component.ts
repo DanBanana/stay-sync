@@ -9,6 +9,7 @@ import { CreateEditBookingDialogComponent } from '../create-edit-booking-dialog/
 @Component({
   selector: 'app-booking-detail-dialog',
   templateUrl: './booking-detail-dialog.component.html',
+  styleUrls: ['./booking-detail-dialog.component.scss'],
 })
 export class BookingDetailDialogComponent {
   constructor(

@@ -1,9 +1,9 @@
-<div class="page-header">
+<header class="page-header">
   <button mat-icon-button (click)="goBack()" matTooltip="Back to Calendars">
     <mat-icon>arrow_back</mat-icon>
   </button>
   <h2>Bookings</h2>
-</div>
+</header>
 
 <div *ngIf="loading$ | async" class="loading-center">
   <mat-spinner diameter="40"></mat-spinner>

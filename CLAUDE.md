@@ -124,13 +124,146 @@ ng serve
 
 ---
 
-## Frontend Development Standards
+## Frontend Development Standards (Angular + Material Aware)
 
-These apply to **every milestone** from M3 onward.
+These apply to **every milestone from M3 onward** and are **non-optional**.
 
-- All Angular forms must use Reactive Forms (FormBuilder / FormGroup / formControlName). Template-driven forms (ngModel) are not allowed.
-- UI form validation must go through reactive form validators.
-- Date form fields must bind to `Date` objects. Convert to/from `YYYY-MM-DD` strings only at the API boundary (on submit / on load via `toDate()` / `toDateString()` helpers).
+### Core Principle
+
+* **Component-first architecture**
+* Angular Material = **UI components**
+* You = **layout, spacing, structure, discipline**
+* Follow `docs/frontend-guidelines.md` strictly
+
+---
+
+### Angular Component Rules
+
+* One responsibility per component
+* Keep components small, reusable, and focused
+* Co-locate `.ts`, `.html`, `.scss`
+* Avoid “god components”
+
+---
+
+### Forms
+
+* Reactive Forms ONLY (no `ngModel`)
+* Validation via Angular validators
+* Date fields use `Date` objects internally
+* Convert to string only at API boundary
+
+---
+
+### HTML & Semantics (Templates)
+
+* Use semantic elements (`main`, `section`, etc.)
+* Avoid unnecessary wrappers
+* Maintain heading hierarchy (`h1 → h6`)
+* Ensure accessibility (labels, alt text, ARIA when needed)
+* No inline styles — SCSS only
+
+---
+
+### Angular Material Usage
+
+* Use Material for UI components (buttons, dialogs, forms, cards)
+* DO NOT:
+
+  * Override internal DOM aggressively
+  * Use `::ng-deep` unless absolutely necessary
+* Prefer:
+
+  * Wrapping components cleanly
+  * Using Material theming
+  * Extending, not fighting
+
+---
+
+### SCSS Architecture (Angular Scoped)
+
+* Prefer **component-level SCSS**
+* Global `styles.scss` only for:
+
+  * variables (CSS custom properties)
+  * base styles
+* Use 4px/8px spacing scale (`--space-*`)
+* Avoid deep nesting (max 2–3 levels)
+* Keep specificity low
+* Use semantic naming (BEM optional, not mandatory)
+
+---
+
+### Layout (Critical)
+
+* Angular Material does NOT handle layout
+* Always use:
+
+  * Flexbox → 1D layouts
+  * Grid → 2D layouts
+* Use `gap` for spacing (no margin hacks)
+* Avoid fixed widths
+
+---
+
+### Responsiveness
+
+* Mobile-first approach
+* Breakpoints:
+
+  * `768px` (tablet)
+  * `1024px` (desktop)
+* Use fluid units (`rem`, `%`, `fr`)
+* Ensure layouts adapt cleanly across all sizes
+
+---
+
+### Scroll Behavior (Strict Rule)
+
+* **Avoid scrollbars whenever possible**
+* Layouts must fit naturally within viewport
+* Use flexible sizing and proper wrapping
+* Only allow scroll when:
+
+  * content is inherently long (tables, feeds)
+* Avoid:
+
+  * nested scroll containers
+  * fixed-height overflow issues
+
+---
+
+### Typography & Spacing
+
+* Use consistent type scale
+* Limit fonts (1–2 max)
+* Maintain readable line length
+* Use spacing tokens only (no magic numbers)
+
+---
+
+### Performance & Maintainability
+
+* Keep styles modular and scoped
+* Avoid unused CSS
+* Minimize overrides and hacks
+* Keep code readable and predictable
+
+---
+
+### Enforcement Rule
+
+Before generating or modifying frontend code, ALWAYS:
+
+1. Reference `docs/frontend-guidelines.md`
+2. Ensure compliance with:
+
+   * Angular component architecture
+   * Angular Material constraints
+   * Layout + spacing standards
+   * Scroll behavior rules
+
+Non-compliant code must be refactored.
 
 ---
 

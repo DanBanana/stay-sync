@@ -1,4 +1,4 @@
-<div class="page-header">
+<header class="page-header">
   <button mat-icon-button (click)="goBack()" matTooltip="Back to Properties">
     <mat-icon>arrow_back</mat-icon>
   </button>
@@ -10,7 +10,7 @@
   <button mat-flat-button color="primary" (click)="openAddCalendar()">
     <mat-icon>add</mat-icon> Add Calendar
   </button>
-</div>
+</header>
 
 <div *ngIf="loading$ | async" class="loading-center">
   <mat-spinner diameter="40"></mat-spinner>

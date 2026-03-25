@@ -21,6 +21,7 @@ export interface CreateEditBookingDialogData {
 @Component({
   selector: 'app-create-edit-booking-dialog',
   templateUrl: './create-edit-booking-dialog.component.html',
+  styleUrls: ['./create-edit-booking-dialog.component.scss'],
 })
 export class CreateEditBookingDialogComponent {
   form: FormGroup;

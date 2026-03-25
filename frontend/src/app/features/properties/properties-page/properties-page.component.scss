@@ -1,26 +1,16 @@
+// ── Layout — mobile base (stacked) ───────────────────────────────────────────
+
 .properties-layout {
   display: flex;
-  gap: 24px;
-  height: calc(100vh - 112px);
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    height: auto;
-  }
+  flex-direction: column;
+  gap: var(--space-5);
 }
 
 .property-list-panel {
-  width: 280px;
-  flex-shrink: 0;
-  border-right: 1px solid #e0e0e0;
+  width: 100%;
+  border-bottom: 1px solid var(--color-border);
+  max-height: 300px;
   overflow-y: auto;
-
-  @media (max-width: 768px) {
-    width: 100%;
-    border-right: none;
-    border-bottom: 1px solid #e0e0e0;
-    max-height: 300px;
-  }
 }
 
 .rooms-panel {
@@ -28,11 +18,13 @@
   overflow-y: auto;
 }
 
+// ── Panel header ──────────────────────────────────────────────────────────────
+
 .panel-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 8px 8px;
+  padding: 0 var(--space-2) var(--space-2);
 
   h2 {
     margin: 0;
@@ -41,58 +33,54 @@
   }
 }
 
+// ── Rooms grid — mobile: single column ───────────────────────────────────────
+
 .rooms-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  padding: 8px;
-
-  @media (max-width: 1024px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-  }
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+  padding: var(--space-2);
 }
 
 .room-card {
   mat-card-actions {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--space-1);
   }
 }
 
+// ── Shared ────────────────────────────────────────────────────────────────────
+
 .selected {
-  background-color: rgba(63, 81, 181, 0.08);
+  background-color: var(--color-primary-selected);
 }
 
 .item-actions {
   display: flex;
-  gap: 4px;
+  gap: var(--space-1);
 }
 
 .empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 32px 16px;
-  color: #9e9e9e;
+  padding: var(--space-6) var(--space-4);
+  color: var(--color-text-muted);
   text-align: center;
 
   mat-icon {
-    font-size: 48px;
-    width: 48px;
-    height: 48px;
-    margin-bottom: 8px;
+    font-size: var(--space-7);
+    width: var(--space-7);
+    height: var(--space-7);
+    margin-bottom: var(--space-2);
   }
 }
 
 .loading-center {
   display: flex;
   justify-content: center;
-  padding: 32px;
+  padding: var(--space-6);
 }
 
 .no-selection {
@@ -101,12 +89,41 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #9e9e9e;
+  color: var(--color-text-muted);
 
   mat-icon {
-    font-size: 48px;
-    width: 48px;
-    height: 48px;
-    margin-bottom: 8px;
+    font-size: var(--space-7);
+    width: var(--space-7);
+    height: var(--space-7);
+    margin-bottom: var(--space-2);
+  }
+}
+
+// ── Tablet (768px+) ───────────────────────────────────────────────────────────
+
+@media (min-width: 768px) {
+  .properties-layout {
+    flex-direction: row;
+    height: calc(100vh - 112px);
+  }
+
+  .property-list-panel {
+    width: 280px;
+    flex-shrink: 0;
+    max-height: none;
+    border-bottom: none;
+    border-right: 1px solid var(--color-border);
+  }
+
+  .rooms-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+// ── Desktop (1024px+) ─────────────────────────────────────────────────────────
+
+@media (min-width: 1024px) {
+  .rooms-grid {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
