@@ -1,4 +1,5 @@
 import { NgModule, isDevMode } from '@angular/core';
+import { ServiceWorkerModule } from '@angular/service-worker';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StoreModule } from '@ngrx/store';
@@ -45,7 +46,11 @@ const metaReducers: MetaReducer[] = [localStorageSyncReducer];
       calendarDashboard: calendarDashboardReducer,
     }, { metaReducers }),
     EffectsModule.forRoot([AuthEffects, PropertiesEffects, RoomsEffects, ExternalCalendarsEffects, BookingsEffects, CalendarDashboardEffects]),
-    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() })
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      registrationStrategy: 'registerWhenStable:30000'
+    })
   ],
   bootstrap: [AppComponent]
 })
