@@ -23,10 +23,11 @@ Simple, reliable system for hospitality operators to manage availability across 
 |---|---|
 | Frontend | Angular + RxJS + NgRx |
 | Backend | .NET Web API (Clean Architecture) |
-| Database | PostgreSQL |
-| Auth | JWT + RBAC |
+| Database | PostgreSQL (Supabase hosted) |
+| Auth | JWT + RBAC (custom, issued by .NET API) |
 | Frontend Hosting | Vercel |
-| Backend + DB Hosting | Railway |
+| Backend Hosting | Small VPS or serverless platform |
+| DB / Auth Provider | Supabase |
 
 ---
 
@@ -150,10 +151,21 @@ Store (NgRx)   — auth slice (global), feature slices per domain area
 | Service | Platform | Notes |
 |---|---|---|
 | Angular SPA | Vercel | `ng build --configuration=production` |
-| .NET API | Railway | Docker or buildpack |
-| PostgreSQL | Railway | Migrations applied at API startup |
+| .NET API | Small VPS / serverless | Docker or self-hosted; exposes REST API |
+| PostgreSQL | Supabase | Migrations applied at API startup via EF Core |
 
-Environment config via Railway env vars → mapped to `appsettings.json` via .NET convention (`JWT__Secret` → `Jwt:Secret`). Angular uses `environment.prod.ts` with `apiBaseUrl` set to Railway API URL.
+**Database connection:** Use the Supabase **connection string** (Session mode, port 5432) from the Supabase project dashboard → Settings → Database. Format:
+```
+Host=db.<project-ref>.supabase.co;Port=5432;Database=postgres;Username=postgres;Password=<db-password>;SSL Mode=Require;Trust Server Certificate=true
+```
+
+**Environment config:** Set env vars on the hosting platform mapped to `appsettings.json` via .NET convention:
+- `ConnectionStrings__DefaultConnection` → Supabase Postgres connection string
+- `JWT__Secret` → signing secret
+- `JWT__Issuer` / `JWT__Audience` → token validation
+- `Cors__AllowedOrigins__0` → Vercel frontend URL
+
+Angular uses `environment.prod.ts` with `apiBaseUrl` pointing to the deployed .NET API URL.
 
 ---
 

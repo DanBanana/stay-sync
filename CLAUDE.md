@@ -30,7 +30,7 @@ For Milestone 1 implementation detail, read `docs/milestone-1.md`.
 - `AuthGuard` + `RoleGuard`
 - Login page with reactive form, error display, loading state
 - Dashboard placeholder (shows user + sign out)
-- Environment files: dev → `:5081`, prod → Railway (update URL when deployed)
+- Environment files: dev → `:5081`, prod → set `apiBaseUrl` in `environment.prod.ts` to deployed .NET API URL
 - CORS verified: Angular `:4200` ↔ API `:5081`
 - `ng build --configuration=production` passes
 
