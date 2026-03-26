@@ -1,3 +1,4 @@
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
@@ -26,16 +27,23 @@ export class ExternalCalendarsPageComponent implements OnInit {
     private router: Router,
     private store: Store,
     private dialog: MatDialog,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private breakpointObserver: BreakpointObserver
   ) {}
 
   ngOnInit(): void {
     this.roomId = this.route.snapshot.paramMap.get('roomId')!;
     this.store.dispatch(ExternalCalendarsActions.loadCalendars({ roomId: this.roomId }));
+
+    this.breakpointObserver.observe('(max-width: 767px)').subscribe(state => {
+      this.displayedColumns = state.matches
+        ? ['platform', 'icsUrl', 'actions']
+        : ['platform', 'icsUrl', 'lastSyncedAt', 'actions'];
+    });
   }
 
   openAddCalendar(): void {
-    const ref = this.dialog.open(CalendarFormDialogComponent, { data: {}, width: '440px' });
+    const ref = this.dialog.open(CalendarFormDialogComponent, { data: {}, width: '440px', maxWidth: '95vw' });
     ref.afterClosed().subscribe(result => {
       if (result) this.store.dispatch(ExternalCalendarsActions.createCalendar({ roomId: this.roomId, ...result }));
     });
@@ -45,6 +53,7 @@ export class ExternalCalendarsPageComponent implements OnInit {
     const ref = this.dialog.open(ConfirmDialogComponent, {
       data: { title: 'Remove Calendar', message: `Remove "${calendar.platform}" calendar? Existing bookings will remain.` },
       width: '360px',
+      maxWidth: '95vw',
     });
     ref.afterClosed().subscribe(confirmed => {
       if (confirmed) {

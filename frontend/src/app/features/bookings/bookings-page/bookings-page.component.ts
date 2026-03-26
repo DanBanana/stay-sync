@@ -1,3 +1,4 @@
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -16,11 +17,22 @@ export class BookingsPageComponent implements OnInit {
   loading$: Observable<boolean> = this.store.select(selectBookingsLoading);
   displayedColumns = ['checkIn', 'checkOut', 'guestName', 'status', 'rawSummary'];
 
-  constructor(private route: ActivatedRoute, private router: Router, private store: Store) {}
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private store: Store,
+    private breakpointObserver: BreakpointObserver
+  ) {}
 
   ngOnInit(): void {
     const roomId = this.route.snapshot.paramMap.get('roomId')!;
     this.store.dispatch(BookingsActions.loadBookingsByRoom({ roomId }));
+
+    this.breakpointObserver.observe('(max-width: 767px)').subscribe(state => {
+      this.displayedColumns = state.matches
+        ? ['checkIn', 'checkOut', 'status']
+        : ['checkIn', 'checkOut', 'guestName', 'status', 'rawSummary'];
+    });
   }
 
   goBack(): void {

@@ -84,7 +84,8 @@ export class DashboardComponent implements OnInit {
   onBookingClicked(booking: CalendarBooking): void {
     this.dialog.open(BookingDetailDialogComponent, {
       data: booking,
-      width: '340px',
+      width: '380px',
+      maxWidth: '95vw',
     });
   }
 
@@ -100,6 +101,6 @@ export class DashboardComponent implements OnInit {
   }
 
   private openCreateDialog(data: CreateEditBookingDialogData): void {
-    this.dialog.open(CreateEditBookingDialogComponent, { data, width: '380px' });
+    this.dialog.open(CreateEditBookingDialogComponent, { data, width: '380px', maxWidth: '95vw' });
   }
 }
