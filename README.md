@@ -7,7 +7,6 @@ Collects ICS calendar feeds from OTA platforms (Airbnb, Booking.com, Expedia), n
 ## Documentation
 
 - [docs/project-context.md](docs/project-context.md) — Architecture overview, data model, tech stack, milestones
-- [docs/milestone-1.md](docs/milestone-1.md) — Milestone 1 technical breakdown (project foundation)
 
 ## Stack
 
