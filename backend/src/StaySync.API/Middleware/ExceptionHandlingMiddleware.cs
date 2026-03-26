@@ -1,5 +1,6 @@
 using System.Text.Json;
 using StaySync.Application.Common.Exceptions;
+using StaySync.Domain.Exceptions;
 
 namespace StaySync.API.Middleware;
 
@@ -25,6 +26,7 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
             NotFoundException => (StatusCodes.Status404NotFound, "Not Found", (object?)null),
             ForbiddenException => (StatusCodes.Status403Forbidden, "Forbidden", (object?)null),
             BadRequestException bre => (StatusCodes.Status400BadRequest, bre.Message, (object?)null),
+            ConflictDetectedException cde => (StatusCodes.Status409Conflict, cde.Message, (object?)null),
             ValidationException ve => (StatusCodes.Status422UnprocessableEntity, "Validation Error", ve.Errors),
             _ => (StatusCodes.Status500InternalServerError, "Internal Server Error", (object?)null)
         };

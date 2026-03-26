@@ -15,8 +15,11 @@
 
     <!-- Room rows -->
     <ng-container *ngFor="let room of rooms">
-      <div class="gantt-room-label" [title]="room.roomName">{{ room.roomName }}</div>
-      <div class="gantt-row-cells">
+      <div class="gantt-room-label" [style.height]="rowHeight(room)" [title]="room.roomName">
+        <span class="room-name">{{ room.roomName }}</span>
+        <span *ngIf="room.conflictCount > 0" class="room-conflict-badge"><fa-icon [icon]="faTriangleExclamation"></fa-icon> {{ room.conflictCount }}</span>
+      </div>
+      <div class="gantt-row-cells" [style.height]="rowHeight(room)">
         <!-- Day cell backgrounds (for grid lines + today highlight) -->
         <div
           *ngFor="let day of days"
@@ -29,13 +32,17 @@
         <div
           *ngFor="let booking of bookingsForRoom(room.roomId)"
           class="booking-bar platform-{{ platformClass(booking.platform) }}"
+          [class.conflict]="booking.hasConflict"
           [style.left]="barStyle(booking)['left']"
           [style.width]="barStyle(booking)['width']"
+          [style.top]="barStyle(booking)['top']"
           [matTooltip]="barTooltip(booking)"
           matTooltipPosition="above"
+          matTooltipClass="tooltip-multiline"
           (click)="onBarClick($event, booking)"
         >
-          {{ booking.platform }}
+          <fa-icon *ngIf="booking.hasConflict" [icon]="faTriangleExclamation" class="conflict-badge"></fa-icon>
+          <span class="bar-label">{{ booking.platform }}</span>
         </div>
       </div>
     </ng-container>

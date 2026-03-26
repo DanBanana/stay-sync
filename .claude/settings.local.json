@@ -29,7 +29,8 @@
       "Bash(npx ng:*)",
       "Bash(xargs grep:*)",
       "Bash(grep -E \"\\\\.\\(ts|html|scss\\)$\")",
-      "Bash(grep -E \"\\\\.\\(ts|html\\)$\")"
+      "Bash(grep -E \"\\\\.\\(ts|html\\)$\")",
+      "Bash(ng test:*)"
     ]
   }
 }

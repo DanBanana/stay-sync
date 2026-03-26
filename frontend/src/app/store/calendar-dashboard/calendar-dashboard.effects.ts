@@ -45,7 +45,7 @@ export class CalendarDashboardEffects {
       switchMap(({ roomId, checkIn, checkOut, guestName }) =>
         this.bookingService.createManual({ roomId, checkIn, checkOut, guestName }).pipe(
           map(() => CalendarDashboardActions.createBookingSuccess()),
-          catchError(err => of(CalendarDashboardActions.createBookingFailure({ error: err.message })))
+          catchError(err => of(CalendarDashboardActions.createBookingFailure({ error: err.error?.message ?? err.message })))
         )
       )
     )
@@ -57,7 +57,7 @@ export class CalendarDashboardEffects {
       switchMap(({ id, checkIn, checkOut, guestName }) =>
         this.bookingService.updateManual(id, { checkIn, checkOut, guestName }).pipe(
           map(() => CalendarDashboardActions.updateBookingSuccess()),
-          catchError(err => of(CalendarDashboardActions.updateBookingFailure({ error: err.message })))
+          catchError(err => of(CalendarDashboardActions.updateBookingFailure({ error: err.error?.message ?? err.message })))
         )
       )
     )

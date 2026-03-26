@@ -2,6 +2,9 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using StaySync.Application.Common.Exceptions;
 using StaySync.Application.Common.Interfaces;
+using StaySync.Domain.Enums;
+using StaySync.Domain.Exceptions;
+using StaySync.Domain.ValueObjects;
 
 namespace StaySync.Application.Features.Bookings.Commands;
 
@@ -21,6 +24,14 @@ public class UpdateManualBookingCommandHandler(
 
         if (booking.ExternalCalendar.Platform != "Manual")
             throw new BadRequestException("Only manual bookings can be edited.");
+
+        var updatedRange = new DateRange(request.CheckIn, request.CheckOut);
+        var existing = await context.Bookings
+            .Where(b => b.RoomId == booking.RoomId && b.Id != booking.Id && b.Status != BookingStatus.Cancelled)
+            .ToListAsync(cancellationToken);
+
+        if (existing.Any(b => updatedRange.Overlaps(new DateRange(b.CheckIn, b.CheckOut))))
+            throw new ConflictDetectedException(booking.RoomId, request.CheckIn, request.CheckOut);
 
         booking.CheckIn = request.CheckIn;
         booking.CheckOut = request.CheckOut;

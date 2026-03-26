@@ -108,6 +108,29 @@ ng serve
 
 ---
 
+### Milestone 6 — Conflict Detection: COMPLETE
+
+#### Backend additions
+- `ConflictDetectedException` wired into `ExceptionHandlingMiddleware` → 409 Conflict
+- Conflict check in `CreateManualBookingCommandHandler`: blocks overlapping manual bookings pre-save
+- Conflict check in `UpdateManualBookingCommandHandler`: blocks overlapping updates, self-excluded via `b.Id != booking.Id`
+- Uses `DateRange.Overlaps()` (half-open interval: `CheckIn < other.CheckOut && other.CheckIn < CheckOut`)
+- Adjacent bookings (checkOut == checkIn) do NOT conflict
+- ICS-imported bookings are never blocked — conflict prevention applies to manual ops only
+- xUnit tests: 4 new conflict tests (create overlap throws, create adjacent succeeds, update overlap throws, update self no-throw)
+
+#### Frontend additions
+- `BookingBar` interface: extends `CalendarBooking` with `lane`, `hasConflict`, `conflictsWith: ConflictInfo[]`
+- `RoomRow` updated: adds `laneCount` and `conflictCount`
+- `selectGroupedByRoom`: `assignLanes()` greedy algorithm stacks overlapping bookings into sub-rows; computes conflicts across all bookings regardless of platform
+- `CalendarGanttComponent`: dynamic row height via `rowHeight()`, bar `top` computed from `booking.lane`
+- Conflict indicators: red `box-shadow` outline, `⚠` badge top-right of bar, upgraded tooltip with full overlap details, room-level `⚠ N` conflict count badge
+- Effects: `createBooking$` and `updateBooking$` read `err.error?.message` to surface 409 API message in snackbar
+- Jasmine tests: selector spec (5 tests for lane/conflict logic), gantt spec extended (conflict CSS, badges, `rowHeight()`)
+- `ng build --configuration=production` passes
+
+---
+
 ## Milestone Roadmap
 
 | # | Milestone | Status |
@@ -117,7 +140,7 @@ ng serve
 | 3 | Core Domain — Property/Room/Calendar/Booking CRUD + UI | **Done** |
 | 4 | Calendar Dashboard | **Done** |
 | 5 | Manual Bookings | **Done** |
-| 6 | Conflict Detection — includes overlap detection, conflict highlighting, and visual lane-assignment rendering (stacking overlapping booking bars into sub-rows) | Pending |
+| 6 | Conflict Detection | **Done** |
 | 7 | ICS Integration | Pending |
 | 8 | Background Sync | Pending |
 | 9 | Hardening | Pending |

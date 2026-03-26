@@ -79,9 +79,11 @@ $bar-top: calc(($row-height - $bar-height) / 2);
 // ── Room rows ─────────────────────────────────────────────────────────────────
 
 .gantt-room-label {
-  height: $row-height;
+  // height set via inline style (dynamic based on laneCount)
+  min-height: $row-height;
   display: flex;
   align-items: center;
+  gap: var(--space-1);
   padding: 0 var(--space-2);
   font-size: var(--font-sm);
   font-weight: 500;
@@ -91,15 +93,37 @@ $bar-top: calc(($row-height - $bar-height) / 2);
   position: sticky;
   left: 0;
   z-index: 2;
-  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+
+  .room-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+    flex: 1;
+  }
+}
+
+.room-conflict-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  font-size: var(--font-sm);
+  color: #f44336;
+  font-weight: 600;
+  white-space: nowrap;
+
+  fa-icon {
+    font-size: 1rem;
+  }
 }
 
 .gantt-row-cells {
   grid-column: 2 / span 42;
   position: relative;
-  height: $row-height;
+  // height set via inline style (dynamic based on laneCount)
+  min-height: $row-height;
   border-bottom: 1px solid var(--color-border-light);
   display: grid;
   grid-template-columns: repeat(42, minmax($day-col-mobile, 1fr));
@@ -118,22 +142,34 @@ $bar-top: calc(($row-height - $bar-height) / 2);
 
 .booking-bar {
   position: absolute;
-  top: $bar-top;
+  // top set via inline style (dynamic based on lane)
   height: $bar-height;
+  display: flex;
+  align-items: center;
   border-radius: 4px;
   padding: 0 var(--space-2);
   font-size: var(--font-sm);
   font-weight: 500;
-  line-height: $bar-height;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  overflow: visible;
   cursor: pointer;
   z-index: 1;
   transition: filter 0.15s ease;
 
+  .bar-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+    flex: 1;
+    line-height: $bar-height;
+  }
+
   &:hover {
     filter: brightness(0.9);
+  }
+
+  &.conflict {
+    box-shadow: 0 0 0 2px #f44336;
   }
 
   &.platform-airbnb  { background: #FF5A5F; color: #fff; }
@@ -141,6 +177,13 @@ $bar-top: calc(($row-height - $bar-height) / 2);
   &.platform-expedia { background: #FFC72C; color: #333; }
   &.platform-manual  { background: #607d8b; color: #fff; }
   &.platform-unknown { background: var(--color-text-muted); color: #fff; }
+}
+
+.conflict-badge {
+  flex-shrink: 0;
+  font-size: 13px;
+  color: #f5a623;
+  pointer-events: none;
 }
 
 // ── Empty state ───────────────────────────────────────────────────────────────

@@ -5,6 +5,7 @@ using StaySync.Application.Features.Bookings.Commands;
 using StaySync.Application.Tests.Common;
 using StaySync.Domain.Entities;
 using StaySync.Domain.Enums;
+using StaySync.Domain.Exceptions;
 
 namespace StaySync.Application.Tests.Features.Bookings;
 
@@ -91,5 +92,55 @@ public class CreateManualBookingCommandHandlerTests
             handler.Handle(
                 new CreateManualBookingCommand(room.Id, new DateOnly(2026, 4, 5), new DateOnly(2026, 4, 10), null),
                 CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task Handle_ThrowsConflictDetectedException_WhenDatesOverlapExistingBooking()
+    {
+        var pmId = Guid.NewGuid();
+        var ctx = CreateContext();
+        var property = new Property { Name = "Beach House", PropertyManagerId = pmId };
+        var room = new Room { Name = "Room A", PropertyId = property.Id, Property = property };
+        ctx.Properties.Add(property);
+        ctx.Rooms.Add(room);
+        await ctx.SaveChangesAsync();
+
+        var currentUser = new TestCurrentUserService { Role = "PropertyManager", PropertyManagerId = pmId };
+        var handler = new CreateManualBookingCommandHandler(ctx, currentUser);
+
+        await handler.Handle(
+            new CreateManualBookingCommand(room.Id, new DateOnly(2026, 4, 5), new DateOnly(2026, 4, 10), null),
+            CancellationToken.None);
+
+        await Assert.ThrowsAsync<ConflictDetectedException>(() =>
+            handler.Handle(
+                new CreateManualBookingCommand(room.Id, new DateOnly(2026, 4, 7), new DateOnly(2026, 4, 12), null),
+                CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task Handle_Succeeds_WhenBookingsAreAdjacent()
+    {
+        var pmId = Guid.NewGuid();
+        var ctx = CreateContext();
+        var property = new Property { Name = "Beach House", PropertyManagerId = pmId };
+        var room = new Room { Name = "Room A", PropertyId = property.Id, Property = property };
+        ctx.Properties.Add(property);
+        ctx.Rooms.Add(room);
+        await ctx.SaveChangesAsync();
+
+        var currentUser = new TestCurrentUserService { Role = "PropertyManager", PropertyManagerId = pmId };
+        var handler = new CreateManualBookingCommandHandler(ctx, currentUser);
+
+        await handler.Handle(
+            new CreateManualBookingCommand(room.Id, new DateOnly(2026, 4, 1), new DateOnly(2026, 4, 5), null),
+            CancellationToken.None);
+
+        // checkIn of second == checkOut of first — half-open interval, no overlap
+        var act = () => handler.Handle(
+            new CreateManualBookingCommand(room.Id, new DateOnly(2026, 4, 5), new DateOnly(2026, 4, 10), null),
+            CancellationToken.None);
+
+        await act.Should().NotThrowAsync();
     }
 }

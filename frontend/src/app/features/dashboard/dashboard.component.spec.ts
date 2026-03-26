@@ -109,7 +109,8 @@ describe('DashboardComponent', () => {
     component.onBookingClicked(mockBooking);
     expect(dialogSpy.open).toHaveBeenCalledWith(BookingDetailDialogComponent, {
       data: mockBooking,
-      width: '340px',
+      width: '380px',
+      maxWidth: '95vw',
     });
   });
 

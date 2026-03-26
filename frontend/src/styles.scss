@@ -14,6 +14,18 @@ $theme: mat.define-light-theme((
 
 @include mat.all-component-themes($theme);
 
+// ── Tooltip overrides ─────────────────────────────────────────────────────────
+
+.tooltip-multiline {
+  white-space: pre;
+  max-width: none !important;
+
+  .mdc-tooltip__surface {
+    text-align: left;
+    padding-right: 16px;
+  }
+}
+
 // ── CSS Custom Properties ─────────────────────────────────────────────────────
 
 :root {

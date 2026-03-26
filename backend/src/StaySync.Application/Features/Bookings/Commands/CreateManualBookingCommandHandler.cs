@@ -4,6 +4,8 @@ using StaySync.Application.Common.Exceptions;
 using StaySync.Application.Common.Interfaces;
 using StaySync.Domain.Entities;
 using StaySync.Domain.Enums;
+using StaySync.Domain.Exceptions;
+using StaySync.Domain.ValueObjects;
 
 namespace StaySync.Application.Features.Bookings.Commands;
 
@@ -20,6 +22,14 @@ public class CreateManualBookingCommandHandler(
 
         if (currentUser.Role != "SuperAdmin" && room.Property.PropertyManagerId != currentUser.PropertyManagerId)
             throw new ForbiddenException();
+
+        var newRange = new DateRange(request.CheckIn, request.CheckOut);
+        var existing = await context.Bookings
+            .Where(b => b.RoomId == request.RoomId && b.Status != BookingStatus.Cancelled)
+            .ToListAsync(cancellationToken);
+
+        if (existing.Any(b => newRange.Overlaps(new DateRange(b.CheckIn, b.CheckOut))))
+            throw new ConflictDetectedException(request.RoomId, request.CheckIn, request.CheckOut);
 
         var manualCalendar = await context.ExternalCalendars
             .FirstOrDefaultAsync(ec => ec.RoomId == request.RoomId && ec.Platform == "Manual", cancellationToken);

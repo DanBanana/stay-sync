@@ -1,6 +1,25 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { selectAllRooms } from '../rooms/rooms.selectors';
+import { CalendarBooking, BookingBar, ConflictInfo, RoomRow } from '../../core/models/booking.model';
 import { CalendarDashboardState } from './calendar-dashboard.reducer';
+
+function hasOverlap(a: CalendarBooking, b: CalendarBooking): boolean {
+  return a.checkIn < b.checkOut && b.checkIn < a.checkOut;
+}
+
+function assignLanes(bookings: CalendarBooking[]): BookingBar[] {
+  const sorted = [...bookings].sort((a, b) => a.checkIn.localeCompare(b.checkIn));
+  const laneEnds: string[] = [];
+  return sorted.map(booking => {
+    let lane = laneEnds.findIndex(end => booking.checkIn >= end);
+    if (lane === -1) lane = laneEnds.length;
+    laneEnds[lane] = booking.checkOut;
+    const conflictsWith: ConflictInfo[] = sorted
+      .filter(other => other.id !== booking.id && hasOverlap(booking, other))
+      .map(other => ({ id: other.id, platform: other.platform, checkIn: other.checkIn, checkOut: other.checkOut }));
+    return { ...booking, lane, hasConflict: conflictsWith.length > 0, conflictsWith };
+  });
+}
 
 export const selectCalendarDashboardState = createFeatureSelector<CalendarDashboardState>('calendarDashboard');
 
@@ -40,15 +59,21 @@ export const selectGroupedByRoom = createSelector(
   selectCalendarPropertyId,
   selectAllRooms,
   selectBookingsInWindow,
-  (propertyId, rooms, bookings) => {
+  (propertyId, rooms, bookings): RoomRow[] => {
     const propertyRooms = rooms.filter(r => r.propertyId === propertyId);
-    const bookingMap = new Map<string, typeof bookings>();
+    const bookingMap = new Map<string, CalendarBooking[]>();
     for (const b of bookings) {
       if (!bookingMap.has(b.roomId)) bookingMap.set(b.roomId, []);
       bookingMap.get(b.roomId)!.push(b);
     }
     return propertyRooms
-      .map(r => ({ roomId: r.id, roomName: r.name, bookings: bookingMap.get(r.id) ?? [] }))
+      .map(r => {
+        const raw = bookingMap.get(r.id) ?? [];
+        const bars = assignLanes(raw);
+        const laneCount = bars.length > 0 ? Math.max(...bars.map(b => b.lane)) + 1 : 1;
+        const conflictCount = bars.filter(b => b.hasConflict).length;
+        return { roomId: r.id, roomName: r.name, bookings: bars, laneCount, conflictCount };
+      })
       .sort((a, b) => a.roomName.localeCompare(b.roomName));
   }
 );

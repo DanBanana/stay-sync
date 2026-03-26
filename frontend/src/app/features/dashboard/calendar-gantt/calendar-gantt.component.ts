@@ -1,11 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { CalendarBooking } from '../../../core/models/booking.model';
-
-interface RoomRow {
-  roomId: string;
-  roomName: string;
-  bookings: CalendarBooking[];
-}
+import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
+import { BookingBar, CalendarBooking, RoomRow } from '../../../core/models/booking.model';
 
 @Component({
   selector: 'app-calendar-gantt',
@@ -18,6 +13,11 @@ export class CalendarGanttComponent implements OnChanges {
   @Input() windowStart!: string;
   @Output() bookingClicked = new EventEmitter<CalendarBooking>();
   @Output() cellClicked = new EventEmitter<{ roomId: string; date: Date }>();
+
+  readonly faTriangleExclamation = faTriangleExclamation;
+  readonly BAR_HEIGHT = 28;
+  readonly LANE_GAP = 4;
+  readonly BAR_PADDING = 6;
 
   today = new Date();
 
@@ -33,7 +33,7 @@ export class CalendarGanttComponent implements OnChanges {
     );
   }
 
-  bookingsForRoom(roomId: string): CalendarBooking[] {
+  bookingsForRoom(roomId: string): BookingBar[] {
     const row = this.rooms.find(r => r.roomId === roomId);
     return row ? row.bookings : [];
   }
@@ -47,7 +47,7 @@ export class CalendarGanttComponent implements OnChanges {
     return 'unknown';
   }
 
-  barStyle(booking: CalendarBooking): { [key: string]: string } {
+  barStyle(booking: BookingBar): { [key: string]: string } {
     const windowStartDate = new Date(this.windowStart);
     const checkIn = new Date(booking.checkIn);
     const checkOut = new Date(booking.checkOut);
@@ -59,15 +59,34 @@ export class CalendarGanttComponent implements OnChanges {
 
     const leftPct = (startDay / totalDays) * 100;
     const widthPct = (spanDays / totalDays) * 100;
+    const top = this.BAR_PADDING + booking.lane * (this.BAR_HEIGHT + this.LANE_GAP);
 
     return {
       left: `${leftPct}%`,
       width: `calc(${widthPct}% - 4px)`,
+      top: `${top}px`,
     };
   }
 
-  barTooltip(booking: CalendarBooking): string {
-    return `${booking.platform} · ${booking.checkIn} → ${booking.checkOut} · ${booking.status}`;
+  rowHeight(room: RoomRow): string {
+    const height = 2 * this.BAR_PADDING + room.laneCount * this.BAR_HEIGHT + (room.laneCount - 1) * this.LANE_GAP;
+    return `${height}px`;
+  }
+
+  barTooltip(booking: BookingBar): string {
+    if (!booking.hasConflict) {
+      return `${booking.platform}\n${this.fmtDate(booking.checkIn)} → ${this.fmtDate(booking.checkOut)}\n${booking.status}`;
+    }
+    const allBookings = [
+      `${booking.platform} · ${this.fmtDate(booking.checkIn)} → ${this.fmtDate(booking.checkOut)}`,
+      ...booking.conflictsWith.map(c => `${c.platform} · ${this.fmtDate(c.checkIn)} → ${this.fmtDate(c.checkOut)}`),
+    ];
+    return `⚠ Conflict detected:\n${allBookings.join('\n')}`;
+  }
+
+  private fmtDate(iso: string): string {
+    const [year, month, day] = iso.split('-').map(Number);
+    return new Date(year, month - 1, day).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   }
 
   onBarClick(event: MouseEvent, booking: CalendarBooking): void {

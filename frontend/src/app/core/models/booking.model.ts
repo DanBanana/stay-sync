@@ -21,6 +21,27 @@ export interface CalendarBooking {
   guestName?: string | null;
 }
 
+export interface ConflictInfo {
+  id: string;
+  platform: string;
+  checkIn: string;
+  checkOut: string;
+}
+
+export interface BookingBar extends CalendarBooking {
+  lane: number;
+  hasConflict: boolean;
+  conflictsWith: ConflictInfo[];
+}
+
+export interface RoomRow {
+  roomId: string;
+  roomName: string;
+  bookings: BookingBar[];
+  laneCount: number;
+  conflictCount: number;
+}
+
 export interface CreateManualBookingRequest {
   roomId: string;
   checkIn: string;
