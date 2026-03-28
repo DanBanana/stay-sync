@@ -6,9 +6,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using StaySync.Application.Common.Interfaces;
 using StaySync.Domain.Interfaces;
+using StaySync.Infrastructure.BackgroundServices;
 using StaySync.Infrastructure.Identity;
 using StaySync.Infrastructure.Persistence;
 using StaySync.Infrastructure.Providers.Ics;
+using StaySync.Infrastructure.Services;
 
 namespace StaySync.Infrastructure;
 
@@ -24,6 +26,9 @@ public static class DependencyInjection
         services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddScoped<IPasswordHasher, BcryptPasswordHasher>();
         services.AddHttpClient<IBookingProvider, IcsBookingProvider>();
+        services.AddScoped<ICalendarSyncService, CalendarSyncService>();
+        services.Configure<BackgroundSyncOptions>(configuration.GetSection(BackgroundSyncOptions.Section));
+        services.AddHostedService<CalendarSyncWorker>();
 
         services.AddHttpContextAccessor();
 

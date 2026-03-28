@@ -1,3 +1,5 @@
+using StaySync.Domain.Enums;
+
 namespace StaySync.Application.Features.ExternalCalendars.DTOs;
 
 public record ExternalCalendarDto(
@@ -6,4 +8,6 @@ public record ExternalCalendarDto(
     string Platform,
     string IcsUrl,
     DateTimeOffset? LastSyncedAt,
+    SyncStatus? LastSyncStatus,
+    string? LastSyncErrorMessage,
     DateTimeOffset CreatedAt);

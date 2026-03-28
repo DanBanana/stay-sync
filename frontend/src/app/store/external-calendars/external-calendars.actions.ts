@@ -15,6 +15,6 @@ export const ExternalCalendarsActions = createActionGroup({
     'Delete Calendar Failure': props<{ error: string }>(),
     'Sync Calendar': props<{ id: string }>(),
     'Sync Calendar Success': props<{ id: string; result: SyncCalendarResult }>(),
-    'Sync Calendar Failure': props<{ error: string }>(),
+    'Sync Calendar Failure': props<{ id: string; error: string }>(),
   }
 });

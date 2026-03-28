@@ -24,6 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\StaySync.Application\StaySync.Application.csproj" />
     <ProjectReference Include="..\..\src\StaySync.Domain\StaySync.Domain.csproj" />
+    <ProjectReference Include="..\..\src\StaySync.Infrastructure\StaySync.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

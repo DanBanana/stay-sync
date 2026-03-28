@@ -156,6 +156,31 @@ ng serve
 
 ---
 
+### Milestone 8 — Background Sync: COMPLETE
+
+#### Backend additions
+- `SyncStatus` enum (`Success = 1, Failed = 2`) added to `StaySync.Domain.Enums`
+- `LastSyncStatus` (nullable int/enum) and `LastSyncErrorMessage` (nullable string) added to `ExternalCalendar` entity
+- EF migration: `AddSyncStatusToExternalCalendar`
+- `ICalendarSyncService` interface (Application layer) + `CalendarSyncService` implementation (Infrastructure): extracted upsert logic from `SyncCalendarCommandHandler`; sets `LastSyncStatus = Success` on success
+- `SyncCalendarCommandHandler` refactored: auth checks → delegates to `ICalendarSyncService`
+- `CalendarSyncWorker : BackgroundService`: wakes every `BackgroundSync:IntervalMinutes` (default 60); queries all non-manual calendars; calls `ICalendarSyncService.SyncAsync()` per calendar; on exception sets `LastSyncStatus = Failed, LastSyncErrorMessage` directly
+- `BackgroundSyncOptions` config class; `appsettings.json` section added
+- DI: `AddScoped<ICalendarSyncService, CalendarSyncService>()`, `AddHostedService<CalendarSyncWorker>()`
+- `ExternalCalendarDto` updated with `LastSyncStatus` and `LastSyncErrorMessage`; both query handlers updated
+- xUnit tests: 5 new `SyncCalendarCommandHandlerTests` (mock service, auth coverage), 4 new `CalendarSyncServiceTests` (insert/update/cancelled/status fields), 3 new `CalendarSyncWorkerTests` (syncs non-manual, marks failed, continues after error) — 62 total passing
+
+#### Frontend additions
+- `SyncStatus` type (`'Success' | 'Failed'`) + `lastSyncStatus` + `lastSyncErrorMessage` fields added to `ExternalCalendar` model
+- `syncCalendarFailure` action extended with `id: string` (to identify affected calendar)
+- NgRx reducer: `syncCalendarSuccess` sets `lastSyncStatus: 'Success'`, clears error; `syncCalendarFailure` sets `lastSyncStatus: 'Failed'`, stores error message per-calendar
+- `syncCalendar$` effect passes `id` in failure dispatch
+- `ExternalCalendarsPageComponent`: new `status` column — green `check_circle` (Success), red `error` icon with tooltip (Failed), dash (null); column added to both desktop and mobile `displayedColumns`
+- Jasmine tests: effects spec updated (failure test now verifies `id`), component spec extended (3 new tests for status observable)
+- `ng build --configuration=production` passes
+
+---
+
 ## Milestone Roadmap
 
 | # | Milestone | Status |
@@ -167,7 +192,7 @@ ng serve
 | 5 | Manual Bookings | **Done** |
 | 6 | Conflict Detection | **Done** |
 | 7 | ICS Integration | **Done** |
-| 8 | Background Sync | Pending |
+| 8 | Background Sync | **Done** |
 | 9 | Hardening | Pending |
 
 ---

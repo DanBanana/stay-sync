@@ -9,9 +9,11 @@ import { ExternalCalendarsActions } from './external-calendars.actions';
 import { ExternalCalendarService } from '../../core/services/external-calendar.service';
 import { ExternalCalendar, SyncCalendarResult } from '../../core/models/external-calendar.model';
 import { CalendarDashboardActions } from '../calendar-dashboard/calendar-dashboard.actions';
+import { selectCalendarPropertyId } from '../calendar-dashboard/calendar-dashboard.selectors';
 
 const mockCalendar: ExternalCalendar = {
-  id: 'c1', roomId: 'r1', platform: 'Airbnb', icsUrl: 'https://airbnb.com/ical/test.ics', lastSyncedAt: null, createdAt: ''
+  id: 'c1', roomId: 'r1', platform: 'Airbnb', icsUrl: 'https://airbnb.com/ical/test.ics',
+  lastSyncedAt: null, lastSyncStatus: null, lastSyncErrorMessage: null, createdAt: ''
 };
 
 const mockSyncResult: SyncCalendarResult = { inserted: 3, updated: 1 };
@@ -81,18 +83,19 @@ describe('ExternalCalendarsEffects', () => {
     });
   });
 
-  it('syncCalendar$ dispatches syncCalendarFailure on service error', done => {
+  it('syncCalendar$ dispatches syncCalendarFailure with id on service error', done => {
     calendarService.sync.and.returnValue(throwError(() => ({ error: { message: 'ICS fetch failed' } })));
     actions$ = of(ExternalCalendarsActions.syncCalendar({ id: 'c1' }));
 
     effects.syncCalendar$.subscribe(action => {
-      expect(action.type).toEqual(ExternalCalendarsActions.syncCalendarFailure.type);
+      expect(action).toEqual(ExternalCalendarsActions.syncCalendarFailure({ id: 'c1', error: 'ICS fetch failed' }));
       done();
     });
   });
 
   it('syncSuccess$ dispatches setProperty when propertyId is available', done => {
-    store.setState({ calendarDashboard: { selectedPropertyId: 'p1' } });
+    store.overrideSelector(selectCalendarPropertyId, 'p1');
+    store.refreshState();
     actions$ = of(ExternalCalendarsActions.syncCalendarSuccess({ id: 'c1', result: mockSyncResult }));
 
     effects.syncSuccess$.subscribe(action => {

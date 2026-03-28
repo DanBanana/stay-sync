@@ -38,6 +38,12 @@
   }
 }
 
+.status-cell {
+  .never-synced {
+    color: var(--color-text-muted);
+  }
+}
+
 .empty-state {
   display: flex;
   flex-direction: column;

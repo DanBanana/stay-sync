@@ -52,7 +52,7 @@ export class ExternalCalendarsEffects {
       switchMap(({ id }) =>
         this.calendarService.sync(id).pipe(
           map(result => ExternalCalendarsActions.syncCalendarSuccess({ id, result })),
-          catchError(err => of(ExternalCalendarsActions.syncCalendarFailure({ error: err.error?.message ?? err.message })))
+          catchError(err => of(ExternalCalendarsActions.syncCalendarFailure({ id, error: err.error?.message ?? err.message })))
         )
       )
     )

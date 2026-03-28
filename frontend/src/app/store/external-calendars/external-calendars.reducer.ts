@@ -28,9 +28,19 @@ export const externalCalendarsReducer = createReducer(
     ...state,
     syncingId: null,
     calendars: state.calendars.map(c =>
-      c.id === id ? { ...c, lastSyncedAt: new Date().toISOString() } : c
+      c.id === id
+        ? { ...c, lastSyncedAt: new Date().toISOString(), lastSyncStatus: 'Success' as const, lastSyncErrorMessage: null }
+        : c
     ),
   })),
-  on(ExternalCalendarsActions.syncCalendarFailure, state => ({ ...state, syncingId: null })),
+  on(ExternalCalendarsActions.syncCalendarFailure, (state, { id, error }) => ({
+    ...state,
+    syncingId: null,
+    calendars: state.calendars.map(c =>
+      c.id === id
+        ? { ...c, lastSyncStatus: 'Failed' as const, lastSyncErrorMessage: error }
+        : c
+    ),
+  })),
   on(AuthActions.logout, () => initialState),
 );

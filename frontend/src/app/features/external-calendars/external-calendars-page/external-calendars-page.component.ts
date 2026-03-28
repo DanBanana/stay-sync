@@ -20,7 +20,7 @@ export class ExternalCalendarsPageComponent implements OnInit {
   calendars$: Observable<ExternalCalendar[]> = this.store.select(selectAllCalendars);
   loading$: Observable<boolean> = this.store.select(selectCalendarsLoading);
   syncingId$: Observable<string | null> = this.store.select(selectSyncingId);
-  displayedColumns = ['platform', 'icsUrl', 'lastSyncedAt', 'sync', 'actions'];
+  displayedColumns = ['platform', 'icsUrl', 'lastSyncedAt', 'status', 'sync', 'actions'];
   roomId!: string;
 
   constructor(
@@ -38,8 +38,8 @@ export class ExternalCalendarsPageComponent implements OnInit {
 
     this.breakpointObserver.observe('(max-width: 767px)').subscribe(state => {
       this.displayedColumns = state.matches
-        ? ['platform', 'sync', 'actions']
-        : ['platform', 'icsUrl', 'lastSyncedAt', 'sync', 'actions'];
+        ? ['platform', 'status', 'sync', 'actions']
+        : ['platform', 'icsUrl', 'lastSyncedAt', 'status', 'sync', 'actions'];
     });
   }
 

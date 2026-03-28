@@ -23,7 +23,7 @@ public class GetExternalCalendarsByRoomQueryHandler(
         return await context.ExternalCalendars
             .Where(c => c.RoomId == request.RoomId)
             .OrderBy(c => c.Platform)
-            .Select(c => new ExternalCalendarDto(c.Id, c.RoomId, c.Platform, c.IcsUrl, c.LastSyncedAt, c.CreatedAt))
+            .Select(c => new ExternalCalendarDto(c.Id, c.RoomId, c.Platform, c.IcsUrl, c.LastSyncedAt, c.LastSyncStatus, c.LastSyncErrorMessage, c.CreatedAt))
             .ToListAsync(cancellationToken);
     }
 }

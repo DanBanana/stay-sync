@@ -7,10 +7,17 @@ import { ActivatedRoute } from '@angular/router';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ExternalCalendarsPageComponent } from './external-calendars-page.component';
 import { ExternalCalendarsActions } from '../../../store/external-calendars/external-calendars.actions';
+import { ExternalCalendar } from '../../../core/models/external-calendar.model';
 
 const initialState = {
   externalCalendars: { calendars: [], loading: false, error: null, syncingId: null }
 };
+
+const makeCalendar = (overrides: Partial<ExternalCalendar> = {}): ExternalCalendar => ({
+  id: 'c1', roomId: 'r1', platform: 'Airbnb', icsUrl: 'https://example.com/ical.ics',
+  lastSyncedAt: null, lastSyncStatus: null, lastSyncErrorMessage: null, createdAt: '',
+  ...overrides,
+});
 
 describe('ExternalCalendarsPageComponent', () => {
   let component: ExternalCalendarsPageComponent;
@@ -63,6 +70,30 @@ describe('ExternalCalendarsPageComponent', () => {
     store.setState({ externalCalendars: { ...initialState.externalCalendars, syncingId: 'cal-abc' } });
     component.syncingId$.subscribe(id => {
       expect(id).toBe('cal-abc');
+      done();
+    });
+  });
+
+  it('should include status in displayedColumns', () => {
+    expect(component.displayedColumns).toContain('status');
+  });
+
+  it('calendars$ should emit calendar with Success status from state', done => {
+    const cal = makeCalendar({ lastSyncStatus: 'Success' });
+    store.setState({ externalCalendars: { ...initialState.externalCalendars, calendars: [cal] } });
+    component.calendars$.subscribe(calendars => {
+      expect(calendars[0].lastSyncStatus).toBe('Success');
+      expect(calendars[0].lastSyncErrorMessage).toBeNull();
+      done();
+    });
+  });
+
+  it('calendars$ should emit calendar with Failed status and error message from state', done => {
+    const cal = makeCalendar({ lastSyncStatus: 'Failed', lastSyncErrorMessage: 'Fetch failed' });
+    store.setState({ externalCalendars: { ...initialState.externalCalendars, calendars: [cal] } });
+    component.calendars$.subscribe(calendars => {
+      expect(calendars[0].lastSyncStatus).toBe('Failed');
+      expect(calendars[0].lastSyncErrorMessage).toBe('Fetch failed');
       done();
     });
   });

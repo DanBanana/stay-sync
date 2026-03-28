@@ -21,6 +21,6 @@ public class GetCalendarByIdQueryHandler(
         if (currentUser.Role != "SuperAdmin" && calendar.Room.Property.PropertyManagerId != currentUser.PropertyManagerId)
             throw new ForbiddenException();
 
-        return new ExternalCalendarDto(calendar.Id, calendar.RoomId, calendar.Platform, calendar.IcsUrl, calendar.LastSyncedAt, calendar.CreatedAt);
+        return new ExternalCalendarDto(calendar.Id, calendar.RoomId, calendar.Platform, calendar.IcsUrl, calendar.LastSyncedAt, calendar.LastSyncStatus, calendar.LastSyncErrorMessage, calendar.CreatedAt);
     }
 }

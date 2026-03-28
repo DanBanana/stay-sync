@@ -11,6 +11,8 @@ public class ExternalCalendarConfiguration : IEntityTypeConfiguration<ExternalCa
         builder.HasKey(ec => ec.Id);
         builder.Property(ec => ec.Platform).IsRequired().HasMaxLength(100);
         builder.Property(ec => ec.IcsUrl).IsRequired();
+        builder.Property(ec => ec.LastSyncStatus).HasConversion<int?>().IsRequired(false);
+        builder.Property(ec => ec.LastSyncErrorMessage).IsRequired(false);
         builder.HasIndex(ec => ec.RoomId);
 
         builder.HasOne(ec => ec.Room)

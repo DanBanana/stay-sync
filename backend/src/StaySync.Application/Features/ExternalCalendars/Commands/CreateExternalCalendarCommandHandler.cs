@@ -31,6 +31,6 @@ public class CreateExternalCalendarCommandHandler(
         context.ExternalCalendars.Add(calendar);
         await context.SaveChangesAsync(cancellationToken);
 
-        return new ExternalCalendarDto(calendar.Id, calendar.RoomId, calendar.Platform, calendar.IcsUrl, calendar.LastSyncedAt, calendar.CreatedAt);
+        return new ExternalCalendarDto(calendar.Id, calendar.RoomId, calendar.Platform, calendar.IcsUrl, calendar.LastSyncedAt, calendar.LastSyncStatus, calendar.LastSyncErrorMessage, calendar.CreatedAt);
     }
 }
