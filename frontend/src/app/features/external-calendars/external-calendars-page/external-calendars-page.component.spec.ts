@@ -8,6 +8,10 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ExternalCalendarsPageComponent } from './external-calendars-page.component';
 import { ExternalCalendarsActions } from '../../../store/external-calendars/external-calendars.actions';
 
+const initialState = {
+  externalCalendars: { calendars: [], loading: false, error: null, syncingId: null }
+};
+
 describe('ExternalCalendarsPageComponent', () => {
   let component: ExternalCalendarsPageComponent;
   let fixture: ComponentFixture<ExternalCalendarsPageComponent>;
@@ -18,8 +22,8 @@ describe('ExternalCalendarsPageComponent', () => {
       declarations: [ExternalCalendarsPageComponent],
       imports: [RouterTestingModule],
       providers: [
-        provideMockStore({ initialState: { externalCalendars: { calendars: [], loading: false, error: null } } }),
-        { provide: MatDialog, useValue: { open: () => ({ afterClosed: () => of(null) }) } },
+        provideMockStore({ initialState }),
+        { provide: MatDialog, useValue: { open: () => ({ afterClosed: () => mockOf(null) }) } },
         { provide: MatSnackBar, useValue: { open: () => {} } },
         { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => 'room-1' } } } },
       ],
@@ -41,6 +45,27 @@ describe('ExternalCalendarsPageComponent', () => {
     component.ngOnInit();
     expect(dispatchSpy).toHaveBeenCalledWith(ExternalCalendarsActions.loadCalendars({ roomId: 'room-1' }));
   });
+
+  it('should dispatch syncCalendar when syncCalendar() is called', () => {
+    const dispatchSpy = spyOn(store, 'dispatch');
+    component.syncCalendar('cal-123');
+    expect(dispatchSpy).toHaveBeenCalledWith(ExternalCalendarsActions.syncCalendar({ id: 'cal-123' }));
+  });
+
+  it('syncingId$ should emit null from initial state', done => {
+    component.syncingId$.subscribe(id => {
+      expect(id).toBeNull();
+      done();
+    });
+  });
+
+  it('syncingId$ should emit calendar id when sync is in progress', done => {
+    store.setState({ externalCalendars: { ...initialState.externalCalendars, syncingId: 'cal-abc' } });
+    component.syncingId$.subscribe(id => {
+      expect(id).toBe('cal-abc');
+      done();
+    });
+  });
 });
 
-function of(value: any) { return { subscribe: (fn: any) => fn(value) }; }
+function mockOf(value: any) { return { subscribe: (fn: any) => fn(value) }; }

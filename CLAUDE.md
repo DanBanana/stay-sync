@@ -131,6 +131,31 @@ ng serve
 
 ---
 
+### Milestone 7 — ICS Integration: COMPLETE
+
+#### Backend additions
+- `IcsBookingProvider` implemented using `Ical.Net` 5.x: downloads ICS via `HttpClient`, parses `VEvent` objects, maps to `Booking` domain entities
+- Events without UID, DtStart, or DtEnd are silently skipped; `CANCELLED` status mapped to `BookingStatus.Cancelled`
+- `SyncCalendarCommand(ExternalCalendarId)` → `SyncCalendarResult(Inserted, Updated)`
+- `SyncCalendarCommandHandler`: upsert by `ExternalUid` (load existing → match by UID → update or insert), stamps `LastSyncedAt` on the calendar
+- Manual calendars cannot be synced (guard throws `BadRequestException`)
+- `POST /api/external-calendars/{id}/sync` → 200 with `{ inserted, updated }`
+- DI: `services.AddHttpClient<IBookingProvider, IcsBookingProvider>()` (typed client pattern — single registration)
+- xUnit tests: 7 new (insert, upsert, cancelled status, LastSyncedAt update, NotFound, Forbidden, Manual guard) — 57 total passing
+
+#### Frontend additions
+- `SyncCalendarResult` interface added to `external-calendar.model.ts`
+- `ExternalCalendarService.sync(id)`: `POST /api/external-calendars/{id}/sync`
+- NgRx `externalCalendars` slice extended: `syncCalendar` / `syncCalendarSuccess` / `syncCalendarFailure` actions; `syncingId: string | null` state tracks in-progress sync per row
+- `selectSyncingId` selector
+- `syncCalendar$` effect: calls service, dispatches success/failure
+- `syncSuccess$` effect: shows snackbar (`"Sync complete — X new, Y updated"`), dispatches `setProperty` to refresh Gantt dashboard if a property is selected
+- `ExternalCalendarsPageComponent`: sync column added with per-row spinner (shown while `syncingId === cal.id`), mobile columns updated
+- Jasmine tests: effects spec extended (5 tests), component spec extended (3 new tests)
+- `ng build --configuration=production` passes
+
+---
+
 ## Milestone Roadmap
 
 | # | Milestone | Status |
@@ -141,7 +166,7 @@ ng serve
 | 4 | Calendar Dashboard | **Done** |
 | 5 | Manual Bookings | **Done** |
 | 6 | Conflict Detection | **Done** |
-| 7 | ICS Integration | Pending |
+| 7 | ICS Integration | **Done** |
 | 8 | Background Sync | Pending |
 | 9 | Hardening | Pending |
 

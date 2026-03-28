@@ -37,6 +37,21 @@
       </td>
     </ng-container>
 
+    <ng-container matColumnDef="sync">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let cal">
+        <button
+          mat-icon-button
+          color="primary"
+          (click)="syncCalendar(cal.id)"
+          [disabled]="(syncingId$ | async) === cal.id"
+          matTooltip="Sync now">
+          <mat-spinner *ngIf="(syncingId$ | async) === cal.id" diameter="20"></mat-spinner>
+          <mat-icon *ngIf="(syncingId$ | async) !== cal.id">sync</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef></th>
       <td mat-cell *matCellDef="let cal">

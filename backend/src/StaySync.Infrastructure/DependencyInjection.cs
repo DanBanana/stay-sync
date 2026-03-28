@@ -23,7 +23,7 @@ public static class DependencyInjection
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddScoped<IPasswordHasher, BcryptPasswordHasher>();
-        services.AddScoped<IBookingProvider, IcsBookingProvider>();
+        services.AddHttpClient<IBookingProvider, IcsBookingProvider>();
 
         services.AddHttpContextAccessor();
 

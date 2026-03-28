@@ -7,7 +7,7 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { ExternalCalendar } from '../../../core/models/external-calendar.model';
 import { ExternalCalendarsActions } from '../../../store/external-calendars/external-calendars.actions';
-import { selectAllCalendars, selectCalendarsLoading } from '../../../store/external-calendars/external-calendars.selectors';
+import { selectAllCalendars, selectCalendarsLoading, selectSyncingId } from '../../../store/external-calendars/external-calendars.selectors';
 import { CalendarFormDialogComponent } from '../calendar-form-dialog/calendar-form-dialog.component';
 import { ConfirmDialogComponent } from '../../../shared/confirm-dialog/confirm-dialog.component';
 
@@ -19,7 +19,8 @@ import { ConfirmDialogComponent } from '../../../shared/confirm-dialog/confirm-d
 export class ExternalCalendarsPageComponent implements OnInit {
   calendars$: Observable<ExternalCalendar[]> = this.store.select(selectAllCalendars);
   loading$: Observable<boolean> = this.store.select(selectCalendarsLoading);
-  displayedColumns = ['platform', 'icsUrl', 'lastSyncedAt', 'actions'];
+  syncingId$: Observable<string | null> = this.store.select(selectSyncingId);
+  displayedColumns = ['platform', 'icsUrl', 'lastSyncedAt', 'sync', 'actions'];
   roomId!: string;
 
   constructor(
@@ -37,8 +38,8 @@ export class ExternalCalendarsPageComponent implements OnInit {
 
     this.breakpointObserver.observe('(max-width: 767px)').subscribe(state => {
       this.displayedColumns = state.matches
-        ? ['platform', 'icsUrl', 'actions']
-        : ['platform', 'icsUrl', 'lastSyncedAt', 'actions'];
+        ? ['platform', 'sync', 'actions']
+        : ['platform', 'icsUrl', 'lastSyncedAt', 'sync', 'actions'];
     });
   }
 
@@ -47,6 +48,10 @@ export class ExternalCalendarsPageComponent implements OnInit {
     ref.afterClosed().subscribe(result => {
       if (result) this.store.dispatch(ExternalCalendarsActions.createCalendar({ roomId: this.roomId, ...result }));
     });
+  }
+
+  syncCalendar(id: string): void {
+    this.store.dispatch(ExternalCalendarsActions.syncCalendar({ id }));
   }
 
   deleteCalendar(calendar: ExternalCalendar): void {

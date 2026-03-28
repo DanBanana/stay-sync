@@ -179,7 +179,7 @@ Angular uses `environment.prod.ts` with `apiBaseUrl` pointing to the deployed .N
 | 4 | Calendar Dashboard | Angular calendar UI, booking visualization per room |
 | 5 | Manual Bookings | Create/edit/delete bookings from UI |
 | 6 | Conflict Detection | Overlap detection, conflict highlighting, lane rendering for overlapping bars |
-| 7 | ICS Integration | ICS download, parse, normalize, upsert |
+| 7 | ICS Integration | ICS download, parse, normalize, upsert — **Done** |
 | 8 | Background Sync | Scheduled ICS sync service |
 | 9 | Hardening | Logging, validation, error handling, production readiness |
 

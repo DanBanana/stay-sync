@@ -48,4 +48,12 @@ public class ExternalCalendarsController(IMediator mediator) : ControllerBase
         await mediator.Send(new DeleteExternalCalendarCommand(id), cancellationToken);
         return NoContent();
     }
+
+    [HttpPost("{id:guid}/sync")]
+    [Authorize(Roles = "SuperAdmin,PropertyManager")]
+    public async Task<IActionResult> Sync(Guid id, CancellationToken cancellationToken)
+    {
+        var result = await mediator.Send(new SyncCalendarCommand(id), cancellationToken);
+        return Ok(result);
+    }
 }

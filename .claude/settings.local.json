@@ -30,7 +30,10 @@
       "Bash(xargs grep:*)",
       "Bash(grep -E \"\\\\.\\(ts|html|scss\\)$\")",
       "Bash(grep -E \"\\\\.\\(ts|html\\)$\")",
-      "Bash(ng test:*)"
+      "Bash(ng test:*)",
+      "Bash(find /c/repos/stay-sync/frontend/src -type f -name *.ts -o -name *.tsx)",
+      "Bash(find /c/repos/stay-sync/frontend/src/app/store -type f -name *.ts)",
+      "Read(//c/Users/User/.nuget/packages/ical.net/5.2.1/**)"
     ]
   }
 }

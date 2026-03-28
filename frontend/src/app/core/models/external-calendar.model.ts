@@ -6,3 +6,8 @@ export interface ExternalCalendar {
   lastSyncedAt: string | null;
   createdAt: string;
 }
+
+export interface SyncCalendarResult {
+  inserted: number;
+  updated: number;
+}

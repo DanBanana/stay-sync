@@ -7,9 +7,10 @@ export interface ExternalCalendarsState {
   calendars: ExternalCalendar[];
   loading: boolean;
   error: string | null;
+  syncingId: string | null;
 }
 
-export const initialState: ExternalCalendarsState = { calendars: [], loading: false, error: null };
+export const initialState: ExternalCalendarsState = { calendars: [], loading: false, error: null, syncingId: null };
 
 export const externalCalendarsReducer = createReducer(
   initialState,
@@ -22,5 +23,14 @@ export const externalCalendarsReducer = createReducer(
   on(ExternalCalendarsActions.deleteCalendarSuccess, (state, { id }) => ({
     ...state, calendars: state.calendars.filter(c => c.id !== id)
   })),
+  on(ExternalCalendarsActions.syncCalendar, (state, { id }) => ({ ...state, syncingId: id })),
+  on(ExternalCalendarsActions.syncCalendarSuccess, (state, { id }) => ({
+    ...state,
+    syncingId: null,
+    calendars: state.calendars.map(c =>
+      c.id === id ? { ...c, lastSyncedAt: new Date().toISOString() } : c
+    ),
+  })),
+  on(ExternalCalendarsActions.syncCalendarFailure, state => ({ ...state, syncingId: null })),
   on(AuthActions.logout, () => initialState),
 );

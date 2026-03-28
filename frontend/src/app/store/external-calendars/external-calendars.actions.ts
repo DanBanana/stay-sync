@@ -1,5 +1,5 @@
 import { createActionGroup, props } from '@ngrx/store';
-import { ExternalCalendar } from '../../core/models/external-calendar.model';
+import { ExternalCalendar, SyncCalendarResult } from '../../core/models/external-calendar.model';
 
 export const ExternalCalendarsActions = createActionGroup({
   source: 'ExternalCalendars',
@@ -13,5 +13,8 @@ export const ExternalCalendarsActions = createActionGroup({
     'Delete Calendar': props<{ id: string }>(),
     'Delete Calendar Success': props<{ id: string }>(),
     'Delete Calendar Failure': props<{ error: string }>(),
+    'Sync Calendar': props<{ id: string }>(),
+    'Sync Calendar Success': props<{ id: string; result: SyncCalendarResult }>(),
+    'Sync Calendar Failure': props<{ error: string }>(),
   }
 });

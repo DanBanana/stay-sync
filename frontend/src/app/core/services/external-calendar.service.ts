@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { ExternalCalendar } from '../models/external-calendar.model';
+import { ExternalCalendar, SyncCalendarResult } from '../models/external-calendar.model';
 
 @Injectable({ providedIn: 'root' })
 export class ExternalCalendarService {
@@ -20,5 +20,9 @@ export class ExternalCalendarService {
 
   delete(id: string): Observable<void> {
     return this.http.delete<void>(`${this.base}/${id}`);
+  }
+
+  sync(id: string): Observable<SyncCalendarResult> {
+    return this.http.post<SyncCalendarResult>(`${this.base}/${id}/sync`, {});
   }
 }
