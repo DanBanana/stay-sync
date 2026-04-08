@@ -66,6 +66,7 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<StaySync.Infrastructure.Persistence.AppDbContext>();
     await db.Database.MigrateAsync();
+    await SeedDevDataAsync(app);
 }
 
 app.UseAuthentication();
