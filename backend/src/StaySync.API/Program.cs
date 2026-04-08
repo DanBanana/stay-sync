@@ -51,6 +51,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+app.UseCors();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())
@@ -61,7 +62,12 @@ if (app.Environment.IsDevelopment())
     await SeedDevDataAsync(app);
 }
 
-app.UseCors();
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<StaySync.Infrastructure.Persistence.AppDbContext>();
+    await db.Database.MigrateAsync();
+}
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
