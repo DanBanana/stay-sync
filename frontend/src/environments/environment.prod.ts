@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiBaseUrl: 'https://api.staysync.app' // TODO: replace with deployed .NET API URL
+  apiBaseUrl: 'https://stay-sync-production.up.railway.app'
 };
