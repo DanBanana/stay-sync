@@ -6,6 +6,7 @@ COPY src/StaySync.Domain/StaySync.Domain.csproj src/StaySync.Domain/
 COPY src/StaySync.Application/StaySync.Application.csproj src/StaySync.Application/
 COPY src/StaySync.Infrastructure/StaySync.Infrastructure.csproj src/StaySync.Infrastructure/
 COPY src/StaySync.API/StaySync.API.csproj src/StaySync.API/
+COPY tests/StaySync.Application.Tests/StaySync.Application.Tests.csproj tests/StaySync.Application.Tests/
 
 RUN dotnet restore
 
