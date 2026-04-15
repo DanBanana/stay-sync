@@ -32,7 +32,14 @@ export class AuthEffects {
             return AuthActions.loginSuccess({ token: result.token, user });
           }),
           catchError(err => {
-            const message = err?.error?.title ?? 'Login failed. Please check your credentials.';
+            let message: string;
+            if (err?.status === 429) {
+              message = 'Too many attempts. Please wait a moment before trying again.';
+            } else if (err?.status === 403) {
+              message = err?.error?.title ?? 'Account is disabled or locked. Please contact an administrator.';
+            } else {
+              message = 'Login failed. Please check your credentials.';
+            }
             return of(AuthActions.loginFailure({ error: message }));
           })
         )

@@ -1,0 +1,136 @@
+.register-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: var(--space-4);
+  background-color: var(--color-bg);
+}
+
+.register-card {
+  width: 100%;
+  max-width: 420px;
+
+  h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: var(--space-1);
+    color: var(--color-primary);
+  }
+
+  .subtitle {
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-4);
+  }
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: var(--space-2);
+}
+
+.error-banner {
+  background: #fdecea;
+  color: #b71c1c;
+  border-radius: 4px;
+  padding: var(--space-2) var(--space-3);
+  font-size: 0.875rem;
+  margin-bottom: var(--space-3);
+}
+
+.submit-btn {
+  width: 100%;
+  margin-top: var(--space-2);
+  padding: var(--space-2) 0;
+}
+
+.login-link {
+  text-align: center;
+  margin-top: var(--space-4);
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+
+  a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 500;
+
+    &:hover { text-decoration: underline; }
+  }
+}
+
+.requirements {
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-2);
+}
+
+/* Password strength bar */
+.strength-bar-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.strength-bar {
+  flex: 1;
+  height: 6px;
+  background: var(--color-border);
+  border-radius: 3px;
+  overflow: hidden;
+
+  .strength-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.3s ease, background-color 0.3s ease;
+  }
+
+  &.strength-weak .strength-fill {
+    width: 33%;
+    background-color: #e53935;
+  }
+
+  &.strength-fair .strength-fill {
+    width: 66%;
+    background-color: #fb8c00;
+  }
+
+  &.strength-strong .strength-fill {
+    width: 100%;
+    background-color: #43a047;
+  }
+}
+
+.strength-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  min-width: 40px;
+  color: var(--color-text-secondary);
+}
+
+/* Token error / success / loading states */
+.token-error,
+.success-state,
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-6) 0;
+  text-align: center;
+}
+
+.error-icon {
+  font-size: 3rem;
+  width: 3rem;
+  height: 3rem;
+  color: #e53935;
+}
+
+.success-icon {
+  font-size: 3rem;
+  width: 3rem;
+  height: 3rem;
+  color: #43a047;
+}

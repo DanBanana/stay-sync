@@ -11,6 +11,7 @@ public interface IApplicationDbContext
     DbSet<Room> Rooms { get; }
     DbSet<ExternalCalendar> ExternalCalendars { get; }
     DbSet<Booking> Bookings { get; }
+    DbSet<InviteToken> InviteTokens { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

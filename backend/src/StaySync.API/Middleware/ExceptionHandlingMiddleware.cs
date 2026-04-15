@@ -24,7 +24,7 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
         var (statusCode, title, errors) = exception switch
         {
             NotFoundException => (StatusCodes.Status404NotFound, "Not Found", (object?)null),
-            ForbiddenException => (StatusCodes.Status403Forbidden, "Forbidden", (object?)null),
+            ForbiddenException fe => (StatusCodes.Status403Forbidden, fe.Message, (object?)null),
             BadRequestException bre => (StatusCodes.Status400BadRequest, bre.Message, (object?)null),
             ConflictDetectedException cde => (StatusCodes.Status409Conflict, cde.Message, (object?)null),
             ValidationException ve => (StatusCodes.Status422UnprocessableEntity, "Validation Error", ve.Errors),

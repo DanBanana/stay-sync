@@ -13,4 +13,5 @@ public class TestDbContext(DbContextOptions<TestDbContext> options)
     public DbSet<Room> Rooms => Set<Room>();
     public DbSet<ExternalCalendar> ExternalCalendars => Set<ExternalCalendar>();
     public DbSet<Booking> Bookings => Set<Booking>();
+    public DbSet<InviteToken> InviteTokens => Set<InviteToken>();
 }

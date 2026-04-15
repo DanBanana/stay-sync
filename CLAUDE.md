@@ -181,6 +181,48 @@ ng serve
 
 ---
 
+### Milestone 9 — Registration + Auth Hardening: COMPLETE
+
+#### Backend additions
+- `User` entity: `IsActive` (bool), `FailedLoginAttempts` (int), `LockoutUntil` (DateTime?)
+- `InviteToken` entity: Email, Role, TokenHash (SHA-256, never raw), ExpiresAt, UsedAt, CreatedByUserId
+- EF migration: `AddInviteTokensAndUserHardening` — **note:** `IsActive` column default was corrected to `true` (migration originally used `false`, which disabled all pre-existing seed users on local DBs)
+- `InviteTokenHelper`: `GenerateRawToken()` (32-byte CSPRNG, URL-safe base64), `Hash()` (SHA-256 hex)
+- `CreateInviteCommand` → returns raw token (SuperAdmin only, 48h expiry, duplicate email/pending invite guard)
+- `AcceptInviteCommand` → validates token, enforces password strength (8+ chars, uppercase, digit, special), creates User + PropertyManager in transaction
+- `ValidateInviteQuery` → public endpoint, returns email/role for registration form prefill
+- `RevokeInviteCommand` → marks UsedAt (SuperAdmin only)
+- `GetInvitesQuery` → all invites (SuperAdmin only)
+- `GetUsersQuery` → all users (SuperAdmin only, no password data)
+- `SetUserActiveCommand(id, isActive)` → deactivate/activate (cannot self-deactivate)
+- `DeleteUserCommand` → hard delete (cannot self-delete)
+- `LoginCommandHandler` hardened: IsActive check → 403, LockoutUntil check → 403, 5 failures → 15-min lockout, success resets counters
+- `SeedDevDataAsync` (Program.cs): repairs pre-existing seed users with `IsActive = false` on startup (sets to `true`); runs on all environments
+- `ForbiddenException` updated to accept custom message
+- Rate limiting: `AddRateLimiter` fixed-window 10 req/min on `/api/auth/login` (returns 429)
+- HSTS: `app.UseHsts()` in production
+- `InvitesController`: POST/GET/DELETE + public validate/accept endpoints
+- `UsersController`: GET/PUT deactivate/PUT activate/DELETE (SuperAdmin only)
+- xUnit tests: 18 new (CreateInvite ×4, AcceptInvite ×4, ValidateInvite ×3, SetUserActive ×3, LoginHardening ×4) — 80 total passing
+
+#### Frontend additions
+- `InviteToken`, `CreateInviteResult`, `InviteInfo`, `AcceptInviteRequest` models
+- `ManagedUser` model
+- `InviteService`: createInvite, getInvites, revokeInvite, validateToken, acceptInvite
+- `UserManagementService`: getUsers, deactivateUser, activateUser, deleteUser
+- NgRx `users` slice: actions/reducer/effects/selectors for all user + invite operations; `generatedToken` state (shown once in dialog)
+- `RegisterComponent` (`/register?token=...`): validates token on init, shows error state if invalid/expired, password strength bar (weak/fair/strong), cross-field password match validation, success redirect to `/login`
+- `RegisterModule` with own lazy route (public, no auth guard)
+- `UsersPageComponent` (`/users`): two tables — Active Users + Pending Invites; deactivate/activate/delete/revoke with ConfirmDialog
+- `InviteUserDialogComponent`: email + role form, generates link shown once with clipboard copy button
+- `UsersModule` with lazy route guarded by `RoleGuard` (SuperAdmin only)
+- Nav: "Users" link in sidenav visible to SuperAdmin only
+- Auth effects: 403 → contextual message ("Account is disabled/locked"), 429 → rate limit message
+- Jasmine tests: `register.component.spec.ts` (5), `users-page.component.spec.ts` (6), `invite-user-dialog.component.spec.ts` (4), `users.effects.spec.ts` (5) — 108 total passing
+- `ng build --configuration=production` passes
+
+---
+
 ## Milestone Roadmap
 
 | # | Milestone | Status |
@@ -193,7 +235,9 @@ ng serve
 | 6 | Conflict Detection | **Done** |
 | 7 | ICS Integration | **Done** |
 | 8 | Background Sync | **Done** |
-| 9 | Hardening | Pending |
+| 9 | Registration + Auth Hardening | **Done** |
+| 10 | Password Reset | Pending |
+| 11 | SuperAdmin Registration | Pending |
 
 ---
 

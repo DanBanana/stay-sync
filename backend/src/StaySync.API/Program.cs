@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using StaySync.API.Middleware;
 using StaySync.Application;
@@ -6,6 +7,7 @@ using StaySync.Domain.Enums;
 using StaySync.Infrastructure;
 using StaySync.Infrastructure.Identity;
 using StaySync.Infrastructure.Persistence;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,6 +42,17 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddFixedWindowLimiter("login", opt =>
+    {
+        opt.PermitLimit = 10;
+        opt.Window = TimeSpan.FromMinutes(1);
+        opt.QueueLimit = 0;
+    });
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+});
+
 var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
 builder.Services.AddCors(options =>
 {
@@ -52,7 +65,11 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 app.UseCors();
+app.UseRateLimiter();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+if (!app.Environment.IsDevelopment())
+    app.UseHsts();
 
 if (app.Environment.IsDevelopment())
 {
@@ -89,8 +106,16 @@ static async Task SeedDevDataAsync(WebApplication app)
 
 static async Task SeedUserAsync(AppDbContext db, string email, string password, UserRole role, string? displayName)
 {
-    if (await db.Users.AnyAsync(u => u.Email == email))
+    var existing = await db.Users.FirstOrDefaultAsync(u => u.Email == email);
+    if (existing is not null)
+    {
+        if (!existing.IsActive)
+        {
+            existing.IsActive = true;
+            await db.SaveChangesAsync();
+        }
         return;
+    }
 
     var user = new User
     {

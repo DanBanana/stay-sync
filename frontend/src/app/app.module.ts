@@ -23,6 +23,8 @@ import { bookingsReducer } from './store/bookings/bookings.reducer';
 import { BookingsEffects } from './store/bookings/bookings.effects';
 import { calendarDashboardReducer } from './store/calendar-dashboard/calendar-dashboard.reducer';
 import { CalendarDashboardEffects } from './store/calendar-dashboard/calendar-dashboard.effects';
+import { usersReducer } from './store/users/users.reducer';
+import { UsersEffects } from './store/users/users.effects';
 
 export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionReducer<any> {
   return localStorageSync({ keys: ['auth'], rehydrate: true })(reducer);
@@ -44,8 +46,9 @@ const metaReducers: MetaReducer[] = [localStorageSyncReducer];
       externalCalendars: externalCalendarsReducer,
       bookings: bookingsReducer,
       calendarDashboard: calendarDashboardReducer,
+      users: usersReducer,
     }, { metaReducers }),
-    EffectsModule.forRoot([AuthEffects, PropertiesEffects, RoomsEffects, ExternalCalendarsEffects, BookingsEffects, CalendarDashboardEffects]),
+    EffectsModule.forRoot([AuthEffects, PropertiesEffects, RoomsEffects, ExternalCalendarsEffects, BookingsEffects, CalendarDashboardEffects, UsersEffects]),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: !isDevMode(),

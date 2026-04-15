@@ -1,0 +1,95 @@
+<main class="register-container">
+  <div class="register-card">
+    <h1>StaySync</h1>
+
+    <!-- Invalid / missing token state -->
+    <ng-container *ngIf="tokenError">
+      <div class="token-error">
+        <mat-icon class="error-icon">error_outline</mat-icon>
+        <p>{{ tokenError }}</p>
+        <button mat-flat-button color="primary" (click)="goToLogin()">Go to Login</button>
+      </div>
+    </ng-container>
+
+    <!-- Success state -->
+    <ng-container *ngIf="success">
+      <div class="success-state">
+        <mat-icon class="success-icon">check_circle_outline</mat-icon>
+        <h2>Account created!</h2>
+        <p>You can now sign in with your credentials.</p>
+        <button mat-flat-button color="primary" (click)="goToLogin()">Sign In</button>
+      </div>
+    </ng-container>
+
+    <!-- Loading invite info -->
+    <ng-container *ngIf="!tokenError && !inviteInfo && !success">
+      <div class="loading-state">
+        <mat-progress-spinner mode="indeterminate" diameter="36"></mat-progress-spinner>
+        <p>Validating invite…</p>
+      </div>
+    </ng-container>
+
+    <!-- Registration form -->
+    <ng-container *ngIf="inviteInfo && !success">
+      <p class="subtitle">Create your account</p>
+
+      <form [formGroup]="form" (ngSubmit)="submit()">
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email" autocomplete="email" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Your name</mat-label>
+          <input matInput formControlName="name" autocomplete="name" />
+          <mat-error *ngIf="form.get('name')?.hasError('required')">Name is required.</mat-error>
+          <mat-error *ngIf="form.get('name')?.hasError('minlength')">Name must be at least 2 characters.</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Password</mat-label>
+          <input matInput [type]="showPassword ? 'text' : 'password'" formControlName="password" autocomplete="new-password" />
+          <button mat-icon-button matSuffix type="button" (click)="showPassword = !showPassword" [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
+            <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          <mat-error *ngIf="form.get('password')?.hasError('minLength')">At least 8 characters.</mat-error>
+          <mat-error *ngIf="form.get('password')?.hasError('noUppercase')">At least one uppercase letter.</mat-error>
+          <mat-error *ngIf="form.get('password')?.hasError('noDigit')">At least one digit.</mat-error>
+          <mat-error *ngIf="form.get('password')?.hasError('noSpecial')">At least one special character.</mat-error>
+        </mat-form-field>
+
+        <!-- Password strength bar -->
+        <div class="strength-bar-wrapper" *ngIf="form.get('password')?.value">
+          <div class="strength-bar" [class]="'strength-' + passwordStrength">
+            <div class="strength-fill"></div>
+          </div>
+          <span class="strength-label">{{ passwordStrength | titlecase }}</span>
+        </div>
+
+        <p class="requirements">Requirements: 8+ chars, 1 uppercase, 1 digit, 1 special character (&#33;&#64;#$…)</p>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Confirm password</mat-label>
+          <input matInput [type]="showConfirm ? 'text' : 'password'" formControlName="confirmPassword" autocomplete="new-password" />
+          <button mat-icon-button matSuffix type="button" (click)="showConfirm = !showConfirm" [attr.aria-label]="showConfirm ? 'Hide password' : 'Show password'">
+            <mat-icon>{{ showConfirm ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          <mat-error *ngIf="form.hasError('passwordMismatch') && form.get('confirmPassword')?.touched">Passwords do not match.</mat-error>
+        </mat-form-field>
+
+        <div class="error-banner" *ngIf="form.hasError('serverError')">
+          {{ form.getError('serverError') }}
+        </div>
+
+        <button mat-flat-button color="primary" type="submit" class="submit-btn" [disabled]="loading">
+          {{ loading ? 'Creating account…' : 'Create account' }}
+        </button>
+
+      </form>
+
+      <p class="login-link">Already have an account? <a routerLink="/login">Sign in</a></p>
+    </ng-container>
+
+  </div>
+</main>

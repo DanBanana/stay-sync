@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './core/auth/auth.guard';
+import { RoleGuard } from './core/auth/role.guard';
 import { LayoutComponent } from './core/layout/layout.component';
 
 const routes: Routes = [
@@ -8,6 +9,10 @@ const routes: Routes = [
   {
     path: 'login',
     loadChildren: () => import('./features/auth/auth.module').then(m => m.AuthModule)
+  },
+  {
+    path: 'register',
+    loadChildren: () => import('./features/auth/register/register.module').then(m => m.RegisterModule)
   },
   {
     path: '',
@@ -33,6 +38,12 @@ const routes: Routes = [
       {
         path: 'dashboard',
         loadChildren: () => import('./features/dashboard/dashboard.module').then(m => m.DashboardModule)
+      },
+      {
+        path: 'users',
+        loadChildren: () => import('./features/users/users.module').then(m => m.UsersModule),
+        canActivate: [RoleGuard],
+        data: { roles: ['SuperAdmin'] }
       }
     ]
   },

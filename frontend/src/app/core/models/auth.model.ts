@@ -1,7 +1,9 @@
+export type UserRole = 'SuperAdmin' | 'PropertyManager';
+
 export interface AuthUser {
   id: string;
   email: string;
-  role: 'SuperAdmin' | 'PropertyManager';
+  role: UserRole;
   propertyManagerId: string | null;
 }
 

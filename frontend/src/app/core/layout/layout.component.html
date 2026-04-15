@@ -20,6 +20,12 @@
         <mat-icon matListItemIcon>home</mat-icon>
         <span matListItemTitle>Properties</span>
       </a>
+      <a mat-list-item routerLink="/users" routerLinkActive="active-link"
+        *ngIf="(user$ | async)?.role === 'SuperAdmin'"
+        (click)="closeSidenavOnMobile()">
+        <mat-icon matListItemIcon>manage_accounts</mat-icon>
+        <span matListItemTitle>Users</span>
+      </a>
     </mat-nav-list>
   </mat-sidenav>
 

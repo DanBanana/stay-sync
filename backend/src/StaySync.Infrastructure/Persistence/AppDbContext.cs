@@ -13,6 +13,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Room> Rooms => Set<Room>();
     public DbSet<ExternalCalendar> ExternalCalendars => Set<ExternalCalendar>();
     public DbSet<Booking> Bookings => Set<Booking>();
+    public DbSet<InviteToken> InviteTokens => Set<InviteToken>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
