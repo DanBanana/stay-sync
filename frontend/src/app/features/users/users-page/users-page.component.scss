@@ -27,12 +27,20 @@
   }
 
   mat-card-content {
-    padding-top: var(--space-2);
+    padding: 0;
+    overflow-x: auto;
   }
 }
 
 .full-width-table {
   width: 100%;
+
+  .mat-column-email {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 200px;
+  }
 }
 
 .loading {
@@ -74,5 +82,11 @@
 @media (max-width: 767px) {
   .users-page {
     padding: var(--space-3) var(--space-2);
+  }
+
+  .full-width-table {
+    .mat-column-email {
+      max-width: 140px;
+    }
   }
 }
